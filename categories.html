@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroceryCRM - Category Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Professional Color Palette - Exact Match */
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --primary-blue-light: #3b82f6;
+            --secondary-purple: #7c3aed;
+            --secondary-purple-dark: #6d28d9;
+            --accent-green: #059669;
+            --accent-green-light: #10b981;
+            --accent-orange: #ea580c;
+            --accent-red: #dc2626;
+            --accent-yellow: #d97706;
+            
+            /* Neutral Colors */
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            
+            /* Text Colors */
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            
+            /* Background Colors */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-dark: #0f172a;
+            
+            /* Shadow System */
+            --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+            
+            /* Border Radius */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Professional Layout System */
+        .dashboard-layout {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Enhanced Sidebar - Matching Products/Dashboard */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-primary);
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 40;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar-header {
+            padding: var(--space-xl) var(--space-lg);
+            border-bottom: 1px solid var(--gray-200);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .logo-text {
+            color: white;
+        }
+
+        .logo-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .logo-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        /* Navigation Menu */
+        .nav-menu {
+            flex: 1;
+            padding: var(--space-lg) 0;
+        }
+
+        .nav-section {
+            margin-bottom: var(--space-xl);
+        }
+
+        .nav-section-title {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0 var(--space-lg);
+            margin-bottom: var(--space-md);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem var(--space-lg);
+            margin: 0 var(--space-md);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background-color: var(--gray-100);
+            color: var(--primary-blue);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: -var(--space-md);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 24px;
+            background: var(--primary-blue);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: var(--space-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--accent-red);
+            color: white;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Professional Header */
+        .header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--gray-200);
+            padding: var(--space-lg) var(--space-xl);
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 100%;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-separator {
+            color: var(--gray-300);
+        }
+
+        .search-container {
+            position: relative;
+            min-width: 320px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.625rem 1rem 0.625rem 2.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            font-size: 0.875rem;
+            background: var(--bg-primary);
+            transition: all var(--transition-fast);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        /* Professional Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: 0.625rem 1rem;
+            border: 1px solid transparent;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--primary-blue) 100%);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border-color: var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-400);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-light) 100%);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, var(--accent-green-light) 0%, var(--accent-green) 100%);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--accent-red) 0%, #ef4444 100%);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #ef4444 0%, var(--accent-red) 100%);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        /* User Profile */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .user-profile:hover {
+            background: var(--gray-50);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            flex: 1;
+            padding: var(--space-xl);
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: var(--space-xl);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        /* Professional Stat Cards */
+        .stat-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-blue);
+        }
+
+        .stat-card.success::before {
+            background: var(--accent-green);
+        }
+
+        .stat-card.warning::before {
+            background: var(--accent-orange);
+        }
+
+        .stat-card.danger::before {
+            background: var(--accent-red);
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-4px);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-light) 100%);
+        }
+
+        .stat-icon.warning {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-yellow) 100%);
+        }
+
+        .stat-icon.danger {
+            background: linear-gradient(135deg, var(--accent-red) 0%, #ef4444 100%);
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+            line-height: 1;
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .stat-change.positive {
+            color: var(--accent-green);
+        }
+
+        .stat-change.negative {
+            color: var(--accent-red);
+        }
+
+        .stat-change.neutral {
+            color: var(--text-muted);
+        }
+
+        /* Categories Container */
+        .categories-container {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .categories-header {
+            padding: var(--space-lg) var(--space-xl);
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--gray-50);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .categories-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .categories-count {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Categories Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-lg);
+            padding: var(--space-xl);
+        }
+
+        .category-card {
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            transition: all var(--transition-normal);
+            cursor: pointer;
+            position: relative;
+            background: var(--bg-primary);
+            overflow: hidden;
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-blue);
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-blue);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+            flex-shrink: 0;
+        }
+
+        .category-info {
+            flex: 1;
+        }
+
+        .category-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .category-description {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .category-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .category-stat {
+            text-align: center;
+            padding: var(--space-md);
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+        }
+
+        .category-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: var(--space-xs);
+        }
+
+        .category-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            flex: 1;
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-backdrop.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-primary);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-2xl);
+            max-width: 500px;
+            width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            border: 1px solid var(--gray-200);
+        }
+
+        .modal-header {
+            padding: var(--space-xl);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+            color: white;
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+            transition: background var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-body {
+            padding: var(--space-xl);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--space-sm);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+            background: var(--bg-primary);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-md);
+        }
+
+        .color-picker-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: var(--space-sm);
+            margin-top: var(--space-sm);
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all var(--transition-fast);
+        }
+
+        .color-option:hover,
+        .color-option.selected {
+            border-color: var(--text-primary);
+            transform: scale(1.1);
+        }
+
+        .icon-picker-container {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: var(--space-sm);
+            margin-top: var(--space-sm);
+        }
+
+        .icon-option {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-100);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .icon-option:hover,
+        .icon-option.selected {
+            background: var(--primary-blue);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .modal-footer {
+            padding: var(--space-lg) var(--space-xl);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: var(--space-sm);
+            background: var(--gray-50);
+        }
+
+        .btn-cancel {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-cancel:hover {
+            background: var(--gray-50);
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-2xl);
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--gray-200);
+            border-top-color: var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: var(--space-md);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .main-content {
+                margin-left: 240px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform var(--transition-normal);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .header-content {
+                flex-wrap: wrap;
+                gap: var(--space-md);
+            }
+            
+            .search-container {
+                order: 3;
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr;
+                padding: var(--space-lg);
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-content {
+                padding: var(--space-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Professional Sidebar - Matching Products/Dashboard -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="logo-text">
+                        <div class="logo-title">GroceryCRM</div>
+                        <div class="logo-subtitle">Professional Business Suite</div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="index.html" class="nav-item">
+                        <div class="nav-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        Dashboard
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Business Operations</div>
+                    <a href="products.html" class="nav-item">
+                        <div class="nav-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        Products
+                    </a>
+                    <a href="categories.html" class="nav-item active">
+                        <div class="nav-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        Categories
+                    </a>
+                    <a href="customers.html" class="nav-item">
+                        <i class="fas fa-users nav-icon"></i>
+                        Customers
+                    </a>
+                    <a href="sales-terminal.html" class="nav-item">
+                        <div class="nav-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        Sales Terminal
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+          <div class="nav-section-title">Financial Management</div>
+          <a href="payments.html" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-credit-card"></i>
+            </div>
+            Payments
+          </a>
+          <a href="reports.html" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            Reports & Analytics
+          </a>
+        </div>
+        
+        <div class="nav-section">
+          <div class="nav-section-title">System</div>
+          <a href="#" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            Inventory Alerts
+            <span class="nav-badge">12</span>
+          </a>
+          <a href="account.html" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-cog"></i>
+            </div>
+            Settings
+          </a>
+          <a href="#" onclick="logout()" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-right-from-bracket"></i>
+            </div>
+            Logout
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Professional Header -->
+            <header class="header">
+                <div class="header-content">
+                    <div class="header-left">
+                        <button class="btn btn-secondary mobile-menu-btn" onclick="toggleMobileMenu()">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        
+                        <nav class="breadcrumb">
+                            <span>Categories</span>
+                            <span class="breadcrumb-separator">/</span>
+                            <span>Management</span>
+                        </nav>
+                        
+                        <div class="search-container">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" class="search-input" id="searchInput" placeholder="Search categories...">
+                        </div>
+                    </div>
+                    
+                    <div class="header-right">
+                        <button class="btn btn-secondary" id="addSampleBtn">
+                            <i class="fas fa-database"></i>
+                            Add Sample Data
+                        </button>
+                        <button class="btn btn-primary" id="addCategoryBtn">
+                            <i class="fas fa-plus"></i>
+                            Add Category
+                        </button>
+                        
+                        <div class="user-profile">
+                            <div class="user-avatar">AS</div>
+                            <div class="user-info">
+                                <div class="user-name">Admin Store</div>
+                                <div class="user-role">Store Manager</div>
+                            </div>
+                            <i class="fas fa-chevron-down" style="color: var(--text-muted); font-size: 0.75rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Page Header -->
+                <div class="page-header fade-in">
+                    <h1 class="page-title gradient-text">Category Management</h1>
+                    <p class="page-subtitle">Organize your products into categories for better management and customer navigation.</p>
+                </div>
+                
+                <!-- Professional Statistics -->
+                <div class="stats-grid slide-up">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Total Categories</div>
+                            <div class="stat-icon">
+                                <i class="fas fa-tags"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalCategories">0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Active categories</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card success">
+                        <div class="stat-header">
+                            <div class="stat-title">Total Products</div>
+                            <div class="stat-icon success">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalProducts">0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>In categories</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card warning">
+                        <div class="stat-header">
+                            <div class="stat-title">Empty Categories</div>
+                            <div class="stat-icon warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="emptyCategories">0</div>
+                        <div class="stat-change neutral">
+                            <i class="fas fa-minus"></i>
+                            <span>No products</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card danger">
+                        <div class="stat-header">
+                            <div class="stat-title">Most Popular</div>
+                            <div class="stat-icon danger">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="popularCategory">-</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-crown"></i>
+                            <span id="popularCategoryCount">0 products</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Categories Container -->
+                <div class="categories-container slide-up">
+                    <div class="categories-header">
+                        <h3>Product Categories</h3>
+                        <span class="categories-count" id="categoriesCount">0 Categories</span>
+                    </div>
+                    
+                    <div class="categories-grid" id="categoriesGrid">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Loading categories...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal-backdrop" id="categoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Add Category</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <input type="hidden" id="categoryId">
+                    
+                    <div class="form-group">
+                        <label for="categoryName">Category Name *</label>
+                        <input type="text" id="categoryName" name="name" required placeholder="Enter category name...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="categoryDescription">Description</label>
+                        <textarea id="categoryDescription" name="description" rows="3" placeholder="Brief description of this category..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Category Color</label>
+                            <input type="hidden" id="categoryColor" name="color" value="#2563eb">
+                            <div class="color-picker-container">
+                                <div class="color-option selected" style="background: #2563eb" data-color="#2563eb"></div>
+                                <div class="color-option" style="background: #059669" data-color="#059669"></div>
+                                <div class="color-option" style="background: #dc2626" data-color="#dc2626"></div>
+                                <div class="color-option" style="background: #7c3aed" data-color="#7c3aed"></div>
+                                <div class="color-option" style="background: #ea580c" data-color="#ea580c"></div>
+                                <div class="color-option" style="background: #0891b2" data-color="#0891b2"></div>
+                                <div class="color-option" style="background: #d97706" data-color="#d97706"></div>
+                                <div class="color-option" style="background: #be185d" data-color="#be185d"></div>
+                                <div class="color-option" style="background: #059669" data-color="#059669"></div>
+                                <div class="color-option" style="background: #374151" data-color="#374151"></div>
+                                <div class="color-option" style="background: #1f2937" data-color="#1f2937"></div>
+                                <div class="color-option" style="background: #6b21a8" data-color="#6b21a8"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="sortOrder">Sort Order</label>
+                            <input type="number" id="sortOrder" name="sortOrder" value="0" min="0" placeholder="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Category Icon</label>
+                        <input type="hidden" id="categoryIcon" name="icon" value="fas fa-tag">
+                        <div class="icon-picker-container">
+                            <div class="icon-option selected" data-icon="fas fa-tag"><i class="fas fa-tag"></i></div>
+                            <div class="icon-option" data-icon="fas fa-apple-alt"><i class="fas fa-apple-alt"></i></div>
+                            <div class="icon-option" data-icon="fas fa-carrot"><i class="fas fa-carrot"></i></div>
+                            <div class="icon-option" data-icon="fas fa-cheese"><i class="fas fa-cheese"></i></div>
+                            <div class="icon-option" data-icon="fas fa-bread-slice"><i class="fas fa-bread-slice"></i></div>
+                            <div class="icon-option" data-icon="fas fa-fish"><i class="fas fa-fish"></i></div>
+                            <div class="icon-option" data-icon="fas fa-wine-bottle"><i class="fas fa-wine-bottle"></i></div>
+                            <div class="icon-option" data-icon="fas fa-cookie-bite"><i class="fas fa-cookie-bite"></i></div>
+                            <div class="icon-option" data-icon="fas fa-snowflake"><i class="fas fa-snowflake"></i></div>
+                            <div class="icon-option" data-icon="fas fa-seedling"><i class="fas fa-seedling"></i></div>
+                            <div class="icon-option" data-icon="fas fa-pump-soap"><i class="fas fa-pump-soap"></i></div>
+                            <div class="icon-option" data-icon="fas fa-boxes"><i class="fas fa-boxes"></i></div>
+                            <div class="icon-option" data-icon="fas fa-utensils"><i class="fas fa-utensils"></i></div>
+                            <div class="icon-option" data-icon="fas fa-coffee"><i class="fas fa-coffee"></i></div>
+                            <div class="icon-option" data-icon="fas fa-ice-cream"><i class="fas fa-ice-cream"></i></div>
+                            <div class="icon-option" data-icon="fas fa-pills"><i class="fas fa-pills"></i></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button type="submit" form="categoryForm" class="btn btn-primary">Save Category</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:5000/api';
+
+        // Global variables
+        let allCategories = [];
+        let allProducts = [];
+        let editingCategoryId = null;
+
+        // Initialize
+        async function init() {
+            await Promise.all([
+                loadCategories(),
+                loadProducts()
+            ]);
+            setupEventListeners();
+            console.log('🚀 Professional Categories Page initialized');
+        }
+
+        // Load categories from API
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/categories`);
+                if (response.ok) {
+                    allCategories = await response.json();
+                    renderCategories();
+                    updateStats();
+                    console.log('✅ Categories loaded successfully');
+                } else {
+                    console.log('ℹ️ No categories found, showing empty state');
+                    showEmptyState();
+                }
+            } catch (error) {
+                console.error('❌ Error loading categories:', error);
+                showNotification('Error loading categories. Please check if the server is running.', 'error');
+                showEmptyState();
+            }
+        }
+
+        // Load products for category statistics
+        async function loadProducts() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/products`);
+                if (response.ok) {
+                    allProducts = await response.json();
+                } else {
+                    allProducts = [];
+                }
+            } catch (error) {
+                console.log('No products data available');
+                allProducts = [];
+            }
+        }
+
+        // Show empty state
+        function showEmptyState() {
+            document.getElementById('categoriesGrid').innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">
+                    <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3 style="margin-bottom: 0.5rem; color: var(--text-secondary);">No Categories Found</h3>
+                    <p style="margin-bottom: 2rem;">Get started by adding categories to organize your products</p>
+                    <button class="btn btn-primary" onclick="openAddModal()">
+                        <i class="fas fa-plus"></i> Add Your First Category
+                    </button>
+                    <button class="btn btn-success" onclick="addSampleData()" style="margin-left: 1rem;">
+                        <i class="fas fa-database"></i> Add Sample Data
+                    </button>
+                </div>
+            `;
+        }
+
+        // Filter categories
+        function getFilteredCategories() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (!searchTerm) return allCategories;
+            
+            return allCategories.filter(category =>
+                category.name.toLowerCase().includes(searchTerm) ||
+                (category.description && category.description.toLowerCase().includes(searchTerm))
+            );
+        }
+
+        // Calculate category product counts
+        function calculateCategoryStats() {
+            return allCategories.map(category => {
+                const productCount = allProducts.filter(product => 
+                    product.category === category.name
+                ).length;
+                
+                return {
+                    ...category,
+                    productCount
+                };
+            });
+        }
+
+        // Update statistics
+        function updateStats() {
+            const categoriesWithCounts = calculateCategoryStats();
+            
+            const totalCategories = categoriesWithCounts.length;
+            const totalProducts = allProducts.length;
+            const emptyCategories = categoriesWithCounts.filter(cat => cat.productCount === 0).length;
+            
+            // Find most popular category
+            const popularCat = categoriesWithCounts.reduce((prev, current) => 
+                (current.productCount > prev.productCount) ? current : prev, 
+                categoriesWithCounts[0] || { name: '-', productCount: 0 }
+            );
+
+            animateValue(document.getElementById('totalCategories'), 0, totalCategories);
+            animateValue(document.getElementById('totalProducts'), 0, totalProducts);
+            animateValue(document.getElementById('emptyCategories'), 0, emptyCategories);
+            
+            document.getElementById('popularCategory').textContent = popularCat.name || '-';
+            document.getElementById('popularCategoryCount').textContent = `${popularCat.productCount || 0} products`;
+        }
+
+        // Animate counter values
+        function animateValue(element, start, end) {
+            if (!element) return;
+            
+            const duration = 1500;
+            const startTime = Date.now();
+            
+            const animate = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const current = Math.floor(start + (end - start) * easeOutCubic(progress));
+                element.textContent = current.toLocaleString();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            
+            animate();
+        }
+
+        function easeOutCubic(t) {
+            return 1 - Math.pow(1 - t, 3);
+        }
+
+        // Render categories
+        function renderCategories() {
+            const filtered = getFilteredCategories();
+            const categoriesWithCounts = filtered.map(category => {
+                const productCount = allProducts.filter(product => 
+                    product.category === category.name
+                ).length;
+                return { ...category, productCount };
+            });
+            
+            document.getElementById('categoriesCount').textContent = `${filtered.length} Categories`;
+            
+            if (filtered.length === 0) {
+                if (allCategories.length === 0) {
+                    showEmptyState();
+                } else {
+                    document.getElementById('categoriesGrid').innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-muted);">
+                            <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                            <h3>No categories match your search</h3>
+                            <p>Try adjusting your search criteria</p>
+                        </div>
+                    `;
+                }
+                return;
+            }
+            
+            const categoriesGrid = document.getElementById('categoriesGrid');
+            categoriesGrid.innerHTML = '';
+            
+            categoriesWithCounts.forEach(category => {
+                const categoryCard = document.createElement('div');
+                categoryCard.className = 'category-card';
+                
+                categoryCard.innerHTML = `
+                    <div class="category-header">
+                        <div class="category-icon" style="background: ${category.color || '#2563eb'}">
+                            <i class="${category.icon || 'fas fa-tag'}"></i>
+                        </div>
+                        <div class="category-info">
+                            <h3 class="category-name">${category.name}</h3>
+                            <p class="category-description">${category.description || 'No description available'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="category-stats">
+                        <div class="category-stat">
+                            <div class="category-stat-value">${category.productCount || 0}</div>
+                            <div class="category-stat-label">Products</div>
+                        </div>
+                        <div class="category-stat">
+                            <div class="category-stat-value">${category.isActive !== false ? 'Active' : 'Inactive'}</div>
+                            <div class="category-stat-label">Status</div>
+                        </div>
+                    </div>
+                    
+                    <div class="category-actions">
+                        <button class="btn btn-primary btn-sm" onclick="editCategory('${category._id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="viewProducts('${category.name}')">
+                            <i class="fas fa-eye"></i> Products
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteCategory('${category._id}', '${category.name.replace(/'/g, "\\'")}', ${category.productCount || 0})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                `;
+                
+                // Apply category color to card
+                categoryCard.style.setProperty('--primary-blue', category.color || '#2563eb');
+                categoryCard.querySelector('.category-card::before')?.style.setProperty('background', category.color || '#2563eb');
+                
+                categoriesGrid.appendChild(categoryCard);
+            });
+        }
+
+        // Modal functions
+        function openAddModal() {
+            editingCategoryId = null;
+            document.getElementById('modalTitle').textContent = 'Add New Category';
+            document.getElementById('categoryForm').reset();
+            document.getElementById('categoryColor').value = '#2563eb';
+            document.getElementById('categoryIcon').value = 'fas fa-tag';
+            document.getElementById('sortOrder').value = allCategories.length;
+            
+            // Reset selections
+            document.querySelectorAll('.color-option').forEach(option => option.classList.remove('selected'));
+            document.querySelectorAll('.icon-option').forEach(option => option.classList.remove('selected'));
+            document.querySelector('.color-option[data-color="#2563eb"]')?.classList.add('selected');
+            document.querySelector('.icon-option[data-icon="fas fa-tag"]')?.classList.add('selected');
+            
+            document.getElementById('categoryModal').classList.add('show');
+        }
+
+        async function editCategory(id) {
+            editingCategoryId = id;
+            const category = allCategories.find(c => c._id === id);
+            if (!category) return;
+            
+            document.getElementById('modalTitle').textContent = 'Edit Category';
+            document.getElementById('categoryId').value = category._id;
+            document.getElementById('categoryName').value = category.name;
+            document.getElementById('categoryDescription').value = category.description || '';
+            document.getElementById('categoryColor').value = category.color || '#2563eb';
+            document.getElementById('categoryIcon').value = category.icon || 'fas fa-tag';
+            document.getElementById('sortOrder').value = category.sortOrder || 0;
+            
+            // Update selections
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.toggle('selected', option.dataset.color === category.color);
+            });
+            document.querySelectorAll('.icon-option').forEach(option => {
+                option.classList.toggle('selected', option.dataset.icon === category.icon);
+            });
+            
+            document.getElementById('categoryModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('categoryModal').classList.remove('show');
+        }
+
+        async function deleteCategory(id, name, productCount) {
+            if (productCount > 0) {
+                if (!confirm(`Category "${name}" has ${productCount} products. Deleting this category might affect those products. Are you sure you want to continue?`)) {
+                    return;
+                }
+            } else {
+                if (!confirm(`Are you sure you want to delete the category "${name}"?`)) {
+                    return;
+                }
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    await loadCategories();
+                    showNotification('Category deleted successfully!', 'success');
+                } else {
+                    const error = await response.json();
+                    showNotification(error.error || 'Failed to delete category', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting category:', error);
+                showNotification('Error deleting category', 'error');
+            }
+        }
+
+        function viewProducts(categoryName) {
+            // Redirect to products page with category filter
+            window.location.href = `products.html?category=${encodeURIComponent(categoryName)}`;
+        }
+
+        // Add sample data
+        async function addSampleData() {
+            try {
+                const sampleCategories = [
+                    {
+                        name: "Fruits",
+                        description: "Fresh fruits and seasonal produce",
+                        color: "#059669",
+                        icon: "fas fa-apple-alt",
+                        sortOrder: 1
+                    },
+                    {
+                        name: "Vegetables",
+                        description: "Farm fresh vegetables and greens",
+                        color: "#10b981",
+                        icon: "fas fa-carrot",
+                        sortOrder: 2
+                    },
+                    {
+                        name: "Dairy",
+                        description: "Milk, cheese, and dairy products",
+                        color: "#0891b2",
+                        icon: "fas fa-cheese",
+                        sortOrder: 3
+                    },
+                    {
+                        name: "Bakery",
+                        description: "Fresh bread and baked goods",
+                        color: "#d97706",
+                        icon: "fas fa-bread-slice",
+                        sortOrder: 4
+                    },
+                    {
+                        name: "Meat & Seafood",
+                        description: "Fresh meat and seafood products",
+                        color: "#dc2626",
+                        icon: "fas fa-fish",
+                        sortOrder: 5
+                    },
+                    {
+                        name: "Beverages",
+                        description: "Soft drinks, juices, and beverages",
+                        color: "#7c3aed",
+                        icon: "fas fa-wine-bottle",
+                        sortOrder: 6
+                    }
+                ];
+
+                for (const category of sampleCategories) {
+                    try {
+                        await fetch(`${API_BASE_URL}/categories`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(category)
+                        });
+                    } catch (error) {
+                        console.log('Category might already exist:', category.name);
+                    }
+                }
+                
+                await loadCategories();
+                showNotification('✅ Sample categories added successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error adding sample data:', error);
+                showNotification('❌ Error adding sample data', 'error');
+            }
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search
+            document.getElementById('searchInput').addEventListener('input', renderCategories);
+            
+            // Buttons
+            document.getElementById('addCategoryBtn').addEventListener('click', openAddModal);
+            document.getElementById('addSampleBtn').addEventListener('click', addSampleData);
+            
+            // Color picker
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    document.getElementById('categoryColor').value = this.dataset.color;
+                });
+            });
+            
+            // Icon picker
+            document.querySelectorAll('.icon-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.icon-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    document.getElementById('categoryIcon').value = this.dataset.icon;
+                });
+            });
+            
+            // Form submission
+            document.getElementById('categoryForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    name: document.getElementById('categoryName').value.trim(),
+                    description: document.getElementById('categoryDescription').value.trim(),
+                    color: document.getElementById('categoryColor').value,
+                    icon: document.getElementById('categoryIcon').value,
+                    sortOrder: parseInt(document.getElementById('sortOrder').value) || 0,
+                    isActive: true
+                };
+
+                try {
+                    let response;
+                    if (editingCategoryId) {
+                        response = await fetch(`${API_BASE_URL}/categories/${editingCategoryId}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(formData)
+                        });
+                    } else {
+                        response = await fetch(`${API_BASE_URL}/categories`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(formData)
+                        });
+                    }
+
+                    if (response.ok) {
+                        await loadCategories();
+                        closeModal();
+                        showNotification(
+                            editingCategoryId ? 'Category updated successfully!' : 'Category added successfully!', 
+                            'success'
+                        );
+                    } else {
+                        const error = await response.json();
+                        showNotification(error.message || 'Failed to save category', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error saving category:', error);
+                    showNotification('Error saving category', 'error');
+                }
+            });
+            
+            // Close modal when clicking outside
+            document.getElementById('categoryModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 2rem;
+                border-radius: var(--radius-lg);
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                box-shadow: var(--shadow-xl);
+                transform: translateX(400px);
+                transition: transform var(--transition-normal);
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                max-width: 400px;
+                ${type === 'success' ? 'background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-light) 100%);' :
+                  type === 'error' ? 'background: linear-gradient(135deg, var(--accent-red) 0%, #ef4444 100%);' :
+                  'background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);'}
+            `;
+            
+            const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
+            notification.innerHTML = `<i class="fas fa-${icon}"></i><span>${message}</span>`;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // Make functions global for onclick handlers
+        window.editCategory = editCategory;
+        window.deleteCategory = deleteCategory;
+        window.viewProducts = viewProducts;
+        window.closeModal = closeModal;
+        window.toggleMobileMenu = toggleMobileMenu;
+        window.addSampleData = addSampleData;
+        window.openAddModal = openAddModal;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

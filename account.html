@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - GroceryCRM Professional</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --primary-blue-light: #3b82f6;
+            --secondary-purple: #7c3aed;
+            --secondary-purple-dark: #6d28d9;
+            --accent-green: #059669;
+            --accent-green-light: #10b981;
+            --accent-orange: #ea580c;
+            --accent-red: #dc2626;
+            --accent-yellow: #d97706;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .dashboard-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--bg-primary);
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 40;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar-header {
+            padding: var(--space-xl) var(--space-lg);
+            border-bottom: 1px solid var(--gray-200);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .logo-text {
+            color: white;
+        }
+
+        .logo-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .logo-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: var(--space-lg) 0;
+        }
+
+        .nav-section {
+            margin-bottom: var(--space-xl);
+        }
+
+        .nav-section-title {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0 var(--space-lg);
+            margin-bottom: var(--space-md);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem var(--space-lg);
+            margin: 0 var(--space-md);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background-color: var(--gray-100);
+            color: var(--primary-blue);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: var(--space-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--gray-200);
+            padding: var(--space-lg) var(--space-xl);
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-separator {
+            color: var(--gray-300);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: 0.625rem 1rem;
+            border: 1px solid transparent;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+            background: transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--primary-blue) 100%);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border-color: var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-400);
+        }
+
+        .btn-danger {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .settings-container {
+            flex: 1;
+            padding: var(--space-xl);
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-header {
+            margin-bottom: var(--space-xl);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: var(--space-xl);
+        }
+
+        .settings-nav {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-lg);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .settings-nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: 0.75rem var(--space-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .settings-nav-item:hover {
+            background: var(--gray-50);
+            color: var(--primary-blue);
+        }
+
+        .settings-nav-item.active {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .settings-nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xl);
+        }
+
+        .settings-section {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            display: none;
+        }
+
+        .settings-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            padding: var(--space-xl);
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .section-description {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .section-content {
+            padding: var(--space-xl);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+            font-size: 0.875rem;
+        }
+
+        .form-help {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: var(--space-xs);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.625rem var(--space-md);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            transition: all var(--transition-fast);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.625rem var(--space-md);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            background: var(--bg-primary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-lg);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-300);
+            transition: var(--transition-fast);
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: var(--transition-fast);
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-lg);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-md);
+            transition: all var(--transition-fast);
+        }
+
+        .setting-item:hover {
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-title {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .setting-desc {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: var(--space-xl) 0;
+        }
+
+        .alert {
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+        }
+
+        .alert-warning {
+            background: rgba(234, 88, 12, 0.1);
+            border: 1px solid rgba(234, 88, 12, 0.2);
+            color: var(--accent-orange);
+        }
+
+        .alert-info {
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            color: var(--primary-blue);
+        }
+
+        .backup-card {
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-md);
+        }
+
+        .backup-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-md);
+        }
+
+        .backup-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .backup-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .backup-status.success {
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--accent-green);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-lg);
+            background: white;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform var(--transition-normal);
+            border: 1px solid var(--gray-200);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--accent-red);
+        }
+
+        @media (max-width: 1024px) {
+            .settings-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-nav {
+                position: static;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: var(--space-sm);
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+
+            .settings-container {
+                padding: var(--space-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="logo-text">
+                        <div class="logo-title">GroceryCRM</div>
+                        <div class="logo-subtitle">Professional Business Suite</div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="index.html" class="nav-item">
+                        <div class="nav-icon"><i class="fas fa-home"></i></div>
+                        Dashboard
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Business Operations</div>
+                    <a href="products.html" class="nav-item">
+                        <div class="nav-icon"><i class="fas fa-box"></i></div>
+                        Products
+                    </a>
+                    <a href="categories.html" class="nav-item">
+                        <div class="nav-icon"><i class="fas fa-tags"></i></div>
+                        Categories
+                    </a>
+                    <a href="customers.html" class="nav-item">
+                        <div class="nav-icon"><i class="fas fa-users"></i></div>
+                        Customers
+                    </a>
+                    <a href="sales-terminal.html" class="nav-item">
+                        <div class="nav-icon"><i class="fas fa-shopping-cart"></i></div>
+                        Sales Terminal
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Financial Management</div>
+                    <a href="payments.html" class="nav-item">
+                        <div class="nav-icon"><i class="fas fa-credit-card"></i></div>
+                        Payments
+                    </a>
+                    <a href="reports.html" class="nav-item">
+                        <div class="nav-icon"><i class="fas fa-chart-bar"></i></div>
+                        Reports & Analytics
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="settings.html" class="nav-item active">
+                        <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                        Settings
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <nav class="breadcrumb">
+                        <span>Dashboard</span>
+                        <span class="breadcrumb-separator">/</span>
+                        <span>Settings</span>
+                    </nav>
+                </div>
+            </header>
+
+            <!-- Settings Container -->
+            <div class="settings-container">
+                <div class="page-header">
+                    <h1 class="page-title">Settings</h1>
+                    <p class="page-subtitle">Manage your store configuration and preferences</p>
+                </div>
+
+                <div class="settings-layout">
+                    <!-- Settings Navigation -->
+                    <div class="settings-nav">
+                        <div class="settings-nav-item active" data-section="general">
+                            <div class="settings-nav-icon"><i class="fas fa-store"></i></div>
+                            General
+                        </div>
+                        <div class="settings-nav-item" data-section="business">
+                            <div class="settings-nav-icon"><i class="fas fa-building"></i></div>
+                            Business Info
+                        </div>
+                        <div class="settings-nav-item" data-section="notifications">
+                            <div class="settings-nav-icon"><i class="fas fa-bell"></i></div>
+                            Notifications
+                        </div>
+                        <div class="settings-nav-item" data-section="inventory">
+                            <div class="settings-nav-icon"><i class="fas fa-boxes"></i></div>
+                            Inventory
+                        </div>
+                        <div class="settings-nav-item" data-section="payments">
+                            <div class="settings-nav-icon"><i class="fas fa-credit-card"></i></div>
+                            Payment Methods
+                        </div>
+                        <div class="settings-nav-item" data-section="receipt">
+                            <div class="settings-nav-icon"><i class="fas fa-receipt"></i></div>
+                            Receipt Settings
+                        </div>
+                        <div class="settings-nav-item" data-section="backup">
+                            <div class="settings-nav-icon"><i class="fas fa-database"></i></div>
+                            Backup & Restore
+                        </div>
+                        <div class="settings-nav-item" data-section="advanced">
+                            <div class="settings-nav-icon"><i class="fas fa-sliders-h"></i></div>
+                            Advanced
+                        </div>
+                    </div>
+
+                    <!-- Settings Content -->
+                    <div class="settings-content">
+                        <!-- General Settings -->
+                        <div class="settings-section active" id="general">
+                            <div class="section-header">
+                                <h2 class="section-title">General Settings</h2>
+                                <p class="section-description">Configure basic application settings</p>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label class="form-label">Store Name</label>
+                                    <input type="text" class="form-input" id="storeName" placeholder="Enter store name">
+                                    <span class="form-help">This name will appear on receipts and reports</span>
+                                </div>
+
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Currency</label>
+                                        <select class="form-select" id="currency">
+                                            <option value="INR">₹ Indian Rupee (INR)</option>
+                                            <option value="USD">$ US Dollar (USD)</option>
+                                            <option value="EUR">€ Euro (EUR)</option>
+                                            <option value="GBP">£ British Pound (GBP)</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Time Zone</label>
+                                        <select class="form-select" id="timezone">
+                                            <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
+                                            <option value="America/New_York">America/New_York (EST)</option>
+                                            <option value="Europe/London">Europe/London (GMT)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Date Format</label>
+                                        <select class="form-select" id="dateFormat">
+                                            <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                            <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Language</label>
+                                        <select class="form-select" id="language">
+                                            <option value="en">English</option>
+                                            <option value="hi">Hindi</option>
+                                            <option value="es">Spanish</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Dark Mode</div>
+                                        <div class="setting-desc">Enable dark theme for better visibility in low light</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="darkMode">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Auto-save</div>
+                                        <div class="setting-desc">Automatically save changes without confirmation</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="autoSave" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <button class="btn btn-primary" onclick="saveGeneralSettings()">
+                                    <i class="fas fa-save"></i>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Business Info -->
+                        <div class="settings-section" id="business">
+                            <div class="section-header">
+                                <h2 class="section-title">Business Information</h2>
+                                <p class="section-description">Manage your store's business details</p>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label class="form-label">Business Name</label>
+                                    <input type="text" class="form-input" id="businessName" placeholder="Enter legal business name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Business Address</label>
+                                    <textarea class="form-input" id="businessAddress" rows="3" placeholder="Enter complete business address"></textarea>
+                                </div>
+
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-input" id="businessPhone" placeholder="+91 98765 43210">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-input" id="businessEmail" placeholder="contact@store.com">
+                                    </div>
+                                </div>
+
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">GST Number</label>
+                                        <input type="text" class="form-input" id="gstNumber" placeholder="Enter GST number">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">PAN Number</label>
+                                        <input type="text" class="form-input" id="panNumber" placeholder="Enter PAN number">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Business Registration Number</label>
+                                    <input type="text" class="form-input" id="registrationNumber" placeholder="Enter business registration number">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Website</label>
+                                    <input type="url" class="form-input" id="website" placeholder="https://yourstore.com">
+                                </div>
+
+                                <button class="btn btn-primary" onclick="saveBusinessInfo()">
+                                    <i class="fas fa-save"></i>
+                                    Save Business Information
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Notifications -->
+                        <div class="settings-section" id="notifications">
+                            <div class="section-header">
+                                <h2 class="section-title">Notification Settings</h2>
+                                <p class="section-description">Configure alerts and notifications</p>
+                            </div>
+                            <div class="section-content">
+                                <h3 style="margin-bottom: var(--space-lg); font-size: 1rem; font-weight: 600;">Inventory Alerts</h3>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Low Stock Alerts</div>
+                                        <div class="setting-desc">Get notified when product stock falls below threshold</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="lowStockAlert" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Low Stock Threshold</label>
+                                    <input type="number" class="form-input" id="lowStockThreshold" value="10" min="1">
+                                    <span class="form-help">Alert when stock quantity falls below this number</span>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Out of Stock Alerts</div>
+                                        <div class="setting-desc">Immediate notification when items are out of stock</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="outOfStockAlert" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Expiry Date Alerts</div>
+                                        <div class="setting-desc">Notify before products reach expiry date</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="expiryAlert" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <h3 style="margin-bottom: var(--space-lg); font-size: 1rem; font-weight: 600;">Sales Notifications</h3>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Daily Sales Summary</div>
+                                        <div class="setting-desc">Receive daily sales report at end of day</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="dailySalesAlert" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Payment Received</div>
+                                        <div class="setting-desc">Notification for each successful payment</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="paymentAlert">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <button class="btn btn-primary" onclick="saveNotificationSettings()">
+                                    <i class="fas fa-save"></i>
+                                    Save Notification Settings
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Inventory Settings -->
+                        <div class="settings-section" id="inventory">
+                            <div class="section-header">
+                                <h2 class="section-title">Inventory Management</h2>
+                                <p class="section-description">Configure inventory tracking and management</p>
+                            </div>
+                            <div class="section-content">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Track Inventory</div>
+                                        <div class="setting-desc">Enable automatic inventory tracking for all products</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="trackInventory" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Auto Deduct Stock</div>
+                                        <div class="setting-desc">Automatically deduct stock quantities on sale</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="autoDeductStock" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Allow Negative Stock</div>
+                                        <div class="setting-desc">Allow sales even when stock is zero</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="allowNegativeStock">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Batch/Lot Tracking</div>
+                                        <div class="setting-desc">Track products by batch or lot numbers</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="batchTracking">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Default Stock Unit</label>
+                                    <select class="form-select" id="stockUnit">
+                                        <option value="pcs">Pieces (pcs)</option>
+                                        <option value="kg">Kilograms (kg)</option>
+                                        <option value="ltr">Liters (ltr)</option>
+                                        <option value="box">Box</option>
+                                        <option value="dozen">Dozen</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Barcode Format</label>
+                                    <select class="form-select" id="barcodeFormat">
+                                        <option value="EAN13">EAN-13</option>
+                                        <option value="UPC">UPC</option>
+                                        <option value="CODE128">Code 128</option>
+                                        <option value="CODE39">Code 39</option>
+                                    </select>
+                                </div>
+
+                                <button class="btn btn-primary" onclick="saveInventorySettings()">
+                                    <i class="fas fa-save"></i>
+                                    Save Inventory Settings
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Payment Methods -->
+                        <div class="settings-section" id="payments">
+                            <div class="section-header">
+                                <h2 class="section-title">Payment Methods</h2>
+                                <p class="section-description">Configure accepted payment methods</p>
+                            </div>
+                            <div class="section-content">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <div>Enable payment methods you want to accept in your store</div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Cash Payment</div>
+                                        <div class="setting-desc">Accept cash payments</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="cashPayment" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Card Payment</div>
+                                        <div class="setting-desc">Credit/Debit card payments</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="cardPayment" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">UPI Payment</div>
+                                        <div class="setting-desc">Accept UPI payments (PhonePe, GPay, etc.)</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="upiPayment" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">UPI ID</label>
+                                    <input type="text" class="form-input" id="upiId" placeholder="yourstore@paytm">
+                                    <span class="form-help">Your UPI ID for receiving payments</span>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Credit/Account Payment</div>
+                                        <div class="setting-desc">Allow customers to buy on credit</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="creditPayment">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Maximum Credit Limit</label>
+                                    <input type="number" class="form-input" id="creditLimit" placeholder="10000">
+                                    <span class="form-help">Maximum amount a customer can purchase on credit</span>
+                                </div>
+
+                                <button class="btn btn-primary" onclick="savePaymentSettings()">
+                                    <i class="fas fa-save"></i>
+                                    Save Payment Settings
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Receipt Settings -->
+                        <div class="settings-section" id="receipt">
+                            <div class="section-header">
+                                <h2 class="section-title">Receipt Configuration</h2>
+                                <p class="section-description">Customize receipt layout and content</p>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label class="form-label">Receipt Header Text</label>
+                                    <textarea class="form-input" id="receiptHeader" rows="3" placeholder="Enter header text for receipts"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Receipt Footer Text</label>
+                                    <textarea class="form-input" id="receiptFooter" rows="2" placeholder="Thank you for shopping with us!"></textarea>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Show GST Details</div>
+                                        <div class="setting-desc">Display GST breakdown on receipts</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="showGST" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Show Barcode</div>
+                                        <div class="setting-desc">Print barcode on receipts</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="showBarcode" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Auto Print Receipt</div>
+                                        <div class="setting-desc">Automatically print receipt after each sale</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="autoPrint">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Receipt Size</label>
+                                    <select class="form-select" id="receiptSize">
+                                        <option value="80mm">80mm (Standard)</option>
+                                        <option value="58mm">58mm (Compact)</option>
+                                        <option value="A4">A4 (Full Page)</option>
+                                    </select>
+                                </div>
+
+                                <button class="btn btn-primary" onclick="saveReceiptSettings()">
+                                    <i class="fas fa-save"></i>
+                                    Save Receipt Settings
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Backup & Restore -->
+                        <div class="settings-section" id="backup">
+                            <div class="section-header">
+                                <h2 class="section-title">Backup & Restore</h2>
+                                <p class="section-description">Protect your data with regular backups</p>
+                            </div>
+                            <div class="section-content">
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <div>Regular backups protect your business data. Enable automatic backups for peace of mind.</div>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Automatic Backup</div>
+                                        <div class="setting-desc">Automatically backup data daily</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="autoBackup" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Backup Frequency</label>
+                                    <select class="form-select" id="backupFrequency">
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <h3 style="margin-bottom: var(--space-lg); font-size: 1rem; font-weight: 600;">Manual Backup</h3>
+
+                                <div class="backup-card">
+                                    <div class="backup-header">
+                                        <div class="backup-title">Last Backup</div>
+                                        <div class="backup-status success">
+                                            <i class="fas fa-check-circle"></i>
+                                            Completed
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: var(--space-md);">
+                                        <i class="fas fa-clock"></i> <span id="lastBackupTime">Never</span>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="createBackup()">
+                                        <i class="fas fa-download"></i>
+                                        Create Backup Now
+                                    </button>
+                                </div>
+
+                                <div class="backup-card">
+                                    <div class="backup-header">
+                                        <div class="backup-title">Restore Data</div>
+                                    </div>
+                                    <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: var(--space-md);">
+                                        Upload a backup file to restore your data
+                                    </div>
+                                    <input type="file" id="restoreFile" accept=".json" style="display: none;">
+                                    <button class="btn btn-secondary" onclick="document.getElementById('restoreFile').click()">
+                                        <i class="fas fa-upload"></i>
+                                        Choose Backup File
+                                    </button>
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <h3 style="margin-bottom: var(--space-lg); font-size: 1rem; font-weight: 600; color: var(--accent-red);">
+                                    <i class="fas fa-exclamation-triangle"></i> Danger Zone
+                                </h3>
+
+                                <div class="backup-card" style="border-color: var(--accent-red);">
+                                    <div class="backup-header">
+                                        <div class="backup-title" style="color: var(--accent-red);">Clear All Data</div>
+                                    </div>
+                                    <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: var(--space-md);">
+                                        Permanently delete all products, sales, and customer data. This action cannot be undone.
+                                    </div>
+                                    <button class="btn btn-danger" onclick="clearAllData()">
+                                        <i class="fas fa-trash"></i>
+                                        Clear All Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Settings -->
+                        <div class="settings-section" id="advanced">
+                            <div class="section-header">
+                                <h2 class="section-title">Advanced Settings</h2>
+                                <p class="section-description">Advanced configuration options</p>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label class="form-label">API Base URL</label>
+                                    <input type="text" class="form-input" id="apiUrl" value="http://localhost:5000/api">
+                                    <span class="form-help">Backend API endpoint URL</span>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Enable API Logging</div>
+                                        <div class="setting-desc">Log all API requests for debugging</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="apiLogging">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Developer Mode</div>
+                                        <div class="setting-desc">Show debug information and console logs</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="devMode">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <h3 style="margin-bottom: var(--space-lg); font-size: 1rem; font-weight: 600;">Database Connection</h3>
+
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    <div>
+                                        <strong>Connection Status:</strong> <span id="dbStatus">Checking...</span>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-secondary" onclick="testConnection()">
+                                    <i class="fas fa-plug"></i>
+                                    Test Connection
+                                </button>
+
+                                <div class="divider"></div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Cache Duration (seconds)</label>
+                                    <input type="number" class="form-input" id="cacheDuration" value="300" min="0">
+                                    <span class="form-help">How long to cache data before refreshing</span>
+                                </div>
+
+                                <button class="btn btn-primary" onclick="saveAdvancedSettings()">
+                                    <i class="fas fa-save"></i>
+                                    Save Advanced Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+
+        // Initialize settings page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllSettings();
+            setupEventListeners();
+            checkDatabaseConnection();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Navigation items
+            document.querySelectorAll('.settings-nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const section = this.getAttribute('data-section');
+                    switchSection(section);
+                });
+            });
+
+            // Restore file input
+            document.getElementById('restoreFile').addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    restoreBackup(e.target.files[0]);
+                }
+            });
+        }
+
+        // Switch between settings sections
+        function switchSection(sectionId) {
+            // Update nav items
+            document.querySelectorAll('.settings-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+
+            // Update content sections
+            document.querySelectorAll('.settings-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // Load all settings from backend/localStorage
+        async function loadAllSettings() {
+            try {
+                // Try to load from backend first
+                const response = await fetch(`${API_BASE_URL}/settings`);
+                if (response.ok) {
+                    const settings = await response.json();
+                    populateSettings(settings);
+                } else {
+                    // Fallback to localStorage
+                    loadLocalSettings();
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+                loadLocalSettings();
+            }
+        }
+
+        // Load settings from localStorage
+        function loadLocalSettings() {
+            const settings = JSON.parse(localStorage.getItem('storeSettings') || '{}');
+            populateSettings(settings);
+        }
+
+        // Populate form fields with settings
+        function populateSettings(settings) {
+            // General settings
+            if (settings.storeName) document.getElementById('storeName').value = settings.storeName;
+            if (settings.currency) document.getElementById('currency').value = settings.currency;
+            if (settings.timezone) document.getElementById('timezone').value = settings.timezone;
+            if (settings.dateFormat) document.getElementById('dateFormat').value = settings.dateFormat;
+            if (settings.language) document.getElementById('language').value = settings.language;
+            if (settings.darkMode !== undefined) document.getElementById('darkMode').checked = settings.darkMode;
+            if (settings.autoSave !== undefined) document.getElementById('autoSave').checked = settings.autoSave;
+
+            // Business info
+            if (settings.businessName) document.getElementById('businessName').value = settings.businessName;
+            if (settings.businessAddress) document.getElementById('businessAddress').value = settings.businessAddress;
+            if (settings.businessPhone) document.getElementById('businessPhone').value = settings.businessPhone;
+            if (settings.businessEmail) document.getElementById('businessEmail').value = settings.businessEmail;
+            if (settings.gstNumber) document.getElementById('gstNumber').value = settings.gstNumber;
+            if (settings.panNumber) document.getElementById('panNumber').value = settings.panNumber;
+            if (settings.registrationNumber) document.getElementById('registrationNumber').value = settings.registrationNumber;
+            if (settings.website) document.getElementById('website').value = settings.website;
+
+            // Notifications
+            if (settings.lowStockAlert !== undefined) document.getElementById('lowStockAlert').checked = settings.lowStockAlert;
+            if (settings.lowStockThreshold) document.getElementById('lowStockThreshold').value = settings.lowStockThreshold;
+            if (settings.outOfStockAlert !== undefined) document.getElementById('outOfStockAlert').checked = settings.outOfStockAlert;
+            if (settings.expiryAlert !== undefined) document.getElementById('expiryAlert').checked = settings.expiryAlert;
+            if (settings.dailySalesAlert !== undefined) document.getElementById('dailySalesAlert').checked = settings.dailySalesAlert;
+            if (settings.paymentAlert !== undefined) document.getElementById('paymentAlert').checked = settings.paymentAlert;
+
+            // Inventory
+            if (settings.trackInventory !== undefined) document.getElementById('trackInventory').checked = settings.trackInventory;
+            if (settings.autoDeductStock !== undefined) document.getElementById('autoDeductStock').checked = settings.autoDeductStock;
+            if (settings.allowNegativeStock !== undefined) document.getElementById('allowNegativeStock').checked = settings.allowNegativeStock;
+            if (settings.batchTracking !== undefined) document.getElementById('batchTracking').checked = settings.batchTracking;
+            if (settings.stockUnit) document.getElementById('stockUnit').value = settings.stockUnit;
+            if (settings.barcodeFormat) document.getElementById('barcodeFormat').value = settings.barcodeFormat;
+
+            // Payments
+            if (settings.cashPayment !== undefined) document.getElementById('cashPayment').checked = settings.cashPayment;
+            if (settings.cardPayment !== undefined) document.getElementById('cardPayment').checked = settings.cardPayment;
+            if (settings.upiPayment !== undefined) document.getElementById('upiPayment').checked = settings.upiPayment;
+            if (settings.upiId) document.getElementById('upiId').value = settings.upiId;
+            if (settings.creditPayment !== undefined) document.getElementById('creditPayment').checked = settings.creditPayment;
+            if (settings.creditLimit) document.getElementById('creditLimit').value = settings.creditLimit;
+
+            // Receipt
+            if (settings.receiptHeader) document.getElementById('receiptHeader').value = settings.receiptHeader;
+            if (settings.receiptFooter) document.getElementById('receiptFooter').value = settings.receiptFooter;
+            if (settings.showGST !== undefined) document.getElementById('showGST').checked = settings.showGST;
+            if (settings.showBarcode !== undefined) document.getElementById('showBarcode').checked = settings.showBarcode;
+            if (settings.autoPrint !== undefined) document.getElementById('autoPrint').checked = settings.autoPrint;
+            if (settings.receiptSize) document.getElementById('receiptSize').value = settings.receiptSize;
+
+            // Backup
+            if (settings.autoBackup !== undefined) document.getElementById('autoBackup').checked = settings.autoBackup;
+            if (settings.backupFrequency) document.getElementById('backupFrequency').value = settings.backupFrequency;
+            if (settings.lastBackupTime) document.getElementById('lastBackupTime').textContent = new Date(settings.lastBackupTime).toLocaleString();
+
+            // Advanced
+            if (settings.apiUrl) document.getElementById('apiUrl').value = settings.apiUrl;
+            if (settings.apiLogging !== undefined) document.getElementById('apiLogging').checked = settings.apiLogging;
+            if (settings.devMode !== undefined) document.getElementById('devMode').checked = settings.devMode;
+            if (settings.cacheDuration) document.getElementById('cacheDuration').value = settings.cacheDuration;
+        }
+
+        // Save General Settings
+        async function saveGeneralSettings() {
+            const settings = {
+                storeName: document.getElementById('storeName').value,
+                currency: document.getElementById('currency').value,
+                timezone: document.getElementById('timezone').value,
+                dateFormat: document.getElementById('dateFormat').value,
+                language: document.getElementById('language').value,
+                darkMode: document.getElementById('darkMode').checked,
+                autoSave: document.getElementById('autoSave').checked
+            };
+
+            await saveSettings('general', settings);
+            showNotification('General settings saved successfully!', 'success');
+        }
+
+        // Save Business Info
+        async function saveBusinessInfo() {
+            const settings = {
+                businessName: document.getElementById('businessName').value,
+                businessAddress: document.getElementById('businessAddress').value,
+                businessPhone: document.getElementById('businessPhone').value,
+                businessEmail: document.getElementById('businessEmail').value,
+                gstNumber: document.getElementById('gstNumber').value,
+                panNumber: document.getElementById('panNumber').value,
+                registrationNumber: document.getElementById('registrationNumber').value,
+                website: document.getElementById('website').value
+            };
+
+            await saveSettings('business', settings);
+            showNotification('Business information saved successfully!', 'success');
+        }
+
+        // Save Notification Settings
+        async function saveNotificationSettings() {
+            const settings = {
+                lowStockAlert: document.getElementById('lowStockAlert').checked,
+                lowStockThreshold: parseInt(document.getElementById('lowStockThreshold').value),
+                outOfStockAlert: document.getElementById('outOfStockAlert').checked,
+                expiryAlert: document.getElementById('expiryAlert').checked,
+                dailySalesAlert: document.getElementById('dailySalesAlert').checked,
+                paymentAlert: document.getElementById('paymentAlert').checked
+            };
+
+            await saveSettings('notifications', settings);
+            showNotification('Notification settings saved successfully!', 'success');
+        }
+
+        // Save Inventory Settings
+        async function saveInventorySettings() {
+            const settings = {
+                trackInventory: document.getElementById('trackInventory').checked,
+                autoDeductStock: document.getElementById('autoDeductStock').checked,
+                allowNegativeStock: document.getElementById('allowNegativeStock').checked,
+                batchTracking: document.getElementById('batchTracking').checked,
+                stockUnit: document.getElementById('stockUnit').value,
+                barcodeFormat: document.getElementById('barcodeFormat').value
+            };
+
+            await saveSettings('inventory', settings);
+            showNotification('Inventory settings saved successfully!', 'success');
+        }
+
+        // Save Payment Settings
+        async function savePaymentSettings() {
+            const settings = {
+                cashPayment: document.getElementById('cashPayment').checked,
+                cardPayment: document.getElementById('cardPayment').checked,
+                upiPayment: document.getElementById('upiPayment').checked,
+                upiId: document.getElementById('upiId').value,
+                creditPayment: document.getElementById('creditPayment').checked,
+                creditLimit: parseFloat(document.getElementById('creditLimit').value) || 0
+            };
+
+            await saveSettings('payments', settings);
+            showNotification('Payment settings saved successfully!', 'success');
+        }
+
+        // Save Receipt Settings
+        async function saveReceiptSettings() {
+            const settings = {
+                receiptHeader: document.getElementById('receiptHeader').value,
+                receiptFooter: document.getElementById('receiptFooter').value,
+                showGST: document.getElementById('showGST').checked,
+                showBarcode: document.getElementById('showBarcode').checked,
+                autoPrint: document.getElementById('autoPrint').checked,
+                receiptSize: document.getElementById('receiptSize').value
+            };
+
+            await saveSettings('receipt', settings);
+            showNotification('Receipt settings saved successfully!', 'success');
+        }
+
+        // Save Advanced Settings
+        async function saveAdvancedSettings() {
+            const settings = {
+                apiUrl: document.getElementById('apiUrl').value,
+                apiLogging: document.getElementById('apiLogging').checked,
+                devMode: document.getElementById('devMode').checked,
+                cacheDuration: parseInt(document.getElementById('cacheDuration').value)
+            };
+
+            await saveSettings('advanced', settings);
+            showNotification('Advanced settings saved successfully!', 'success');
+        }
+
+        // Generic save settings function
+        async function saveSettings(category, settings) {
+            try {
+                // Save to backend
+                const response = await fetch(`${API_BASE_URL}/settings`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        category: category,
+                        settings: settings
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to save to backend');
+                }
+
+                // Also save to localStorage as backup
+                const allSettings = JSON.parse(localStorage.getItem('storeSettings') || '{}');
+                Object.assign(allSettings, settings);
+                localStorage.setItem('storeSettings', JSON.stringify(allSettings));
+
+                return true;
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                // Fallback to localStorage only
+                const allSettings = JSON.parse(localStorage.getItem('storeSettings') || '{}');
+                Object.assign(allSettings, settings);
+                localStorage.setItem('storeSettings', JSON.stringify(allSettings));
+                return false;
+            }
+        }
+
+        // Create Backup
+        async function createBackup() {
+            try {
+                showNotification('Creating backup...', 'info');
+
+                // Fetch all data
+                const [products, sales, customers, settings] = await Promise.all([
+                    fetch(`${API_BASE_URL}/products`).then(r => r.json()).catch(() => []),
+                    fetch(`${API_BASE_URL}/sales`).then(r => r.json()).catch(() => []),
+                    fetch(`${API_BASE_URL}/customers`).then(r => r.json()).catch(() => []),
+                    Promise.resolve(JSON.parse(localStorage.getItem('storeSettings') || '{}'))
+                ]);
+
+                const backup = {
+                    timestamp: new Date().toISOString(),
+                    version: '1.0',
+                    data: {
+                        products: Array.isArray(products) ? products : (products.products || []),
+                        sales: Array.isArray(sales) ? sales : (sales.sales || []),
+                        customers: Array.isArray(customers) ? customers : (customers.customers || []),
+                        settings: settings
+                    }
+                };
+
+                // Create download
+                const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `grocerycrm-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // Update last backup time
+                const updatedSettings = JSON.parse(localStorage.getItem('storeSettings') || '{}');
+                updatedSettings.lastBackupTime = new Date().toISOString();
+                localStorage.setItem('storeSettings', JSON.stringify(updatedSettings));
+                document.getElementById('lastBackupTime').textContent = new Date().toLocaleString();
+
+                showNotification('Backup created successfully!', 'success');
+            } catch (error) {
+                console.error('Backup error:', error);
+                showNotification('Failed to create backup: ' + error.message, 'error');
+            }
+        }
+
+        // Restore Backup
+        async function restoreBackup(file) {
+            if (!confirm('This will replace all existing data. Are you sure you want to continue?')) {
+                return;
+            }
+
+            try {
+                const text = await file.text();
+                const backup = JSON.parse(text);
+
+                if (!backup.data || !backup.version) {
+                    throw new Error('Invalid backup file format');
+                }
+
+                showNotification('Restoring backup...', 'info');
+
+                // Restore to backend
+                const promises = [];
+
+                // Restore products
+                if (backup.data.products && backup.data.products.length > 0) {
+                    for (const product of backup.data.products) {
+                        promises.push(
+                            fetch(`${API_BASE_URL}/products`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(product)
+                            }).catch(e => console.error('Failed to restore product:', e))
+                        );
+                    }
+                }
+
+                // Restore customers
+                if (backup.data.customers && backup.data.customers.length > 0) {
+                    for (const customer of backup.data.customers) {
+                        promises.push(
+                            fetch(`${API_BASE_URL}/customers`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(customer)
+                            }).catch(e => console.error('Failed to restore customer:', e))
+                        );
+                    }
+                }
+
+                // Restore settings
+                if (backup.data.settings) {
+                    localStorage.setItem('storeSettings', JSON.stringify(backup.data.settings));
+                }
+
+                await Promise.allSettled(promises);
+
+                showNotification('Backup restored successfully!', 'success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+
+            } catch (error) {
+                console.error('Restore error:', error);
+                showNotification('Failed to restore backup: ' + error.message, 'error');
+            }
+        }
+
+        // Clear All Data
+        async function clearAllData() {
+            const confirmation = prompt('Type "DELETE ALL" to confirm permanent deletion of all data:');
+            
+            if (confirmation !== 'DELETE ALL') {
+                showNotification('Data deletion cancelled', 'info');
+                return;
+            }
+
+            try {
+                showNotification('Clearing all data...', 'info');
+
+                // Clear backend data
+                await Promise.allSettled([
+                    fetch(`${API_BASE_URL}/products/clear-all`, { method: 'DELETE' }),
+                    fetch(`${API_BASE_URL}/sales/clear-all`, { method: 'DELETE' }),
+                    fetch(`${API_BASE_URL}/customers/clear-all`, { method: 'DELETE' })
+                ]);
+
+                // Clear localStorage
+                localStorage.removeItem('storeSettings');
+                localStorage.removeItem('salesHistory');
+                localStorage.removeItem('cart');
+
+                showNotification('All data cleared successfully!', 'success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+
+            } catch (error) {
+                console.error('Clear data error:', error);
+                showNotification('Error clearing data: ' + error.message, 'error');
+            }
+        }
+
+        // Test Database Connection
+        async function testConnection() {
+            const statusEl = document.getElementById('dbStatus');
+            statusEl.textContent = 'Testing...';
+            statusEl.style.color = 'var(--accent-orange)';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    statusEl.textContent = 'Connected ✓';
+                    statusEl.style.color = 'var(--accent-green)';
+                    showNotification('Database connection successful!', 'success');
+                } else {
+                    throw new Error('Connection failed');
+                }
+            } catch (error) {
+                statusEl.textContent = 'Disconnected ✗';
+                statusEl.style.color = 'var(--accent-red)';
+                showNotification('Database connection failed. Using local storage.', 'error');
+            }
+        }
+
+        // Check Database Connection on load
+        async function checkDatabaseConnection() {
+            const statusEl = document.getElementById('dbStatus');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                if (response.ok) {
+                    statusEl.textContent = 'Connected ✓';
+                    statusEl.style.color = 'var(--accent-green)';
+                } else {
+                    throw new Error('Not connected');
+                }
+            } catch (error) {
+                statusEl.textContent = 'Disconnected (Using Local Storage)';
+                statusEl.style.color = 'var(--accent-orange)';
+            }
+        }
+
+        // Show Notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            const icon = type === 'success' ? 'check-circle' : 
+                        type === 'error' ? 'exclamation-circle' : 
+                        'info-circle';
+            
+            notification.innerHTML = `
+                <i class="fas fa-${icon}" style="font-size: 1.25rem;"></i>
+                <div style="flex: 1;">${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // Auto-save functionality
+        let autoSaveTimeout;
+        document.querySelectorAll('.form-input, .form-select').forEach(input => {
+            input.addEventListener('change', function() {
+                const autoSave = document.getElementById('autoSave');
+                if (autoSave && autoSave.checked) {
+                    clearTimeout(autoSaveTimeout);
+                    autoSaveTimeout = setTimeout(() => {
+                        const section = this.closest('.settings-section');
+                        if (section) {
+                            const sectionId = section.id;
+                            // Auto-save based on section
+                            if (sectionId === 'general') saveGeneralSettings();
+                            else if (sectionId === 'business') saveBusinessInfo();
+                            else if (sectionId === 'notifications') saveNotificationSettings();
+                            else if (sectionId === 'inventory') saveInventorySettings();
+                            else if (sectionId === 'payments') savePaymentSettings();
+                            else if (sectionId === 'receipt') saveReceiptSettings();
+                            else if (sectionId === 'advanced') saveAdvancedSettings();
+                        }
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

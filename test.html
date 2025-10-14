@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroceryCRM - Advanced System Diagnostics</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            /* Advanced Color Palette */
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --secondary-purple: #7c3aed;
+            --accent-green: #059669;
+            --accent-green-light: #10b981;
+            --accent-orange: #ea580c;
+            --accent-red: #dc2626;
+            --accent-yellow: #d97706;
+            --accent-cyan: #0891b2;
+            
+            /* Status Colors */
+            --status-online: #22c55e;
+            --status-warning: #f59e0b;
+            --status-error: #ef4444;
+            --status-offline: #64748b;
+            --status-testing: #3b82f6;
+            
+            /* Neutral Colors */
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            
+            /* Background Colors */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-dark: #0f172a;
+            --bg-terminal: #1a1a1a;
+            
+            /* Shadow System */
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            
+            /* Border Radius */
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            
+            /* Spacing */
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--gray-100) 100%);
+            color: var(--gray-900);
+            line-height: 1.6;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            min-height: 100vh;
+            padding: var(--space-xl);
+        }
+
+        /* Header Section */
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+            color: white;
+            padding: var(--space-xl);
+            border-radius: var(--radius-2xl);
+            margin-bottom: var(--space-xl);
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.1; }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: var(--space-xl);
+            align-items: center;
+        }
+
+        .header-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .system-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: var(--space-sm);
+            background: linear-gradient(45deg, #ffffff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .system-subtitle {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.online {
+            background: var(--status-online);
+            box-shadow: 0 0 20px var(--status-online);
+        }
+
+        .status-indicator.error {
+            background: var(--status-error);
+            box-shadow: 0 0 20px var(--status-error);
+        }
+
+        .status-indicator.testing {
+            background: var(--status-testing);
+            box-shadow: 0 0 20px var(--status-testing);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-md);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .control-button {
+            background: var(--bg-primary);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-lg);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-button:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-blue);
+        }
+
+        .control-button.running {
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-light) 100%);
+            color: white;
+            border-color: var(--accent-green);
+        }
+
+        .control-button.error {
+            background: linear-gradient(135deg, var(--accent-red) 0%, #ef4444 100%);
+            color: white;
+            border-color: var(--accent-red);
+        }
+
+        .control-icon {
+            font-size: 2rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .control-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+        }
+
+        .control-subtitle {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+
+        /* Main Content Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        /* System Status Cards */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .status-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gray-300);
+        }
+
+        .status-card.online::before {
+            background: var(--status-online);
+        }
+
+        .status-card.error::before {
+            background: var(--status-error);
+        }
+
+        .status-card.warning::before {
+            background: var(--status-warning);
+        }
+
+        .status-card.testing::before {
+            background: var(--status-testing);
+        }
+
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .card-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .card-status.online {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--status-online);
+        }
+
+        .card-status.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--status-error);
+        }
+
+        .card-status.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--status-warning);
+        }
+
+        .card-status.testing {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--status-testing);
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-sm);
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .metric-value {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .metric-value.success {
+            color: var(--status-online);
+        }
+
+        .metric-value.error {
+            color: var(--status-error);
+        }
+
+        /* API Testing Panel */
+        .api-panel {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .api-header {
+            background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-900) 100%);
+            color: white;
+            padding: var(--space-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .api-content {
+            padding: var(--space-lg);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .api-endpoint {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .api-endpoint:hover {
+            background: var(--gray-50);
+            border-color: var(--primary-blue);
+        }
+
+        .api-method {
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .api-method.get {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--status-online);
+        }
+
+        .api-method.post {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .api-method.put {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--status-warning);
+        }
+
+        .api-method.delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--status-error);
+        }
+
+        .api-path {
+            flex: 1;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+        }
+
+        .api-test-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .api-test-btn:hover {
+            background: var(--primary-blue-dark);
+            transform: translateY(-1px);
+        }
+
+        .api-result {
+            margin-top: var(--space-sm);
+            padding: var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.75rem;
+        }
+
+        .api-result.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--status-online);
+        }
+
+        .api-result.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--status-error);
+        }
+
+        /* Terminal/Log Panel */
+        .terminal-panel {
+            background: var(--bg-terminal);
+            border: 1px solid var(--gray-700);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .terminal-header {
+            background: var(--gray-800);
+            color: var(--gray-100);
+            padding: var(--space-md) var(--space-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gray-700);
+        }
+
+        .terminal-controls {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .terminal-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .terminal-btn.close {
+            background: #ff5f57;
+        }
+
+        .terminal-btn.minimize {
+            background: #ffbd2e;
+        }
+
+        .terminal-btn.maximize {
+            background: #28ca42;
+        }
+
+        .terminal-content {
+            padding: var(--space-lg);
+            height: 300px;
+            overflow-y: auto;
+            background: var(--bg-terminal);
+            color: var(--gray-100);
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+        }
+
+        .log-entry {
+            margin-bottom: var(--space-sm);
+            padding: var(--space-sm);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--gray-600);
+        }
+
+        .log-entry.info {
+            border-left-color: var(--status-testing);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .log-entry.success {
+            border-left-color: var(--status-online);
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .log-entry.error {
+            border-left-color: var(--status-error);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .log-entry.warning {
+            border-left-color: var(--status-warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .log-timestamp {
+            color: var(--gray-400);
+            font-size: 0.75rem;
+        }
+
+        .log-message {
+            color: var(--gray-100);
+            margin-top: var(--space-sm);
+        }
+
+        /* Performance Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .metric-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+        }
+
+        .metric-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .metric-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--space-md);
+            color: var(--primary-blue);
+        }
+
+        .metric-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: var(--space-sm);
+        }
+
+        .metric-title {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: var(--space-lg);
+            }
+            
+            .header-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .control-panel {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: currentColor;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-light) 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-yellow) 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--accent-red) 0%, #ef4444 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        /* Charts Container */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .chart-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .chart-header {
+            margin-bottom: var(--space-lg);
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: var(--space-sm);
+        }
+
+        .chart-subtitle {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header fade-in">
+            <div class="header-content">
+                <div class="header-info">
+                    <h1 class="system-title">🛒 GroceryCRM System Diagnostics</h1>
+                    <p class="system-subtitle">Advanced Testing & Monitoring Dashboard</p>
+                    <div class="system-status">
+                        <div class="status-indicator online" id="systemStatus"></div>
+                        <span id="systemStatusText">System Initializing...</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="runFullSystemTest()">
+                        <i class="fas fa-play"></i>
+                        Run Full Test
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearLogs()">
+                        <i class="fas fa-trash"></i>
+                        Clear Logs
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel slide-in">
+            <div class="control-button" onclick="testDashboard()" id="dashboardTest">
+                <div class="control-icon"><i class="fas fa-tachometer-alt"></i></div>
+                <div class="control-title">Dashboard</div>
+                <div class="control-subtitle">Test main dashboard</div>
+            </div>
+            <div class="control-button" onclick="testProducts()" id="productsTest">
+                <div class="control-icon"><i class="fas fa-boxes"></i></div>
+                <div class="control-title">Products</div>
+                <div class="control-subtitle">Test product management</div>
+            </div>
+            <div class="control-button" onclick="testCategories()" id="categoriesTest">
+                <div class="control-icon"><i class="fas fa-tags"></i></div>
+                <div class="control-title">Categories</div>
+                <div class="control-subtitle">Test category system</div>
+            </div>
+            <div class="control-button" onclick="testCustomers()" id="customersTest">
+                <div class="control-icon"><i class="fas fa-users"></i></div>
+                <div class="control-title">Customers</div>
+                <div class="control-subtitle">Test customer management</div>
+            </div>
+            <div class="control-button" onclick="testSales()" id="salesTest">
+                <div class="control-icon"><i class="fas fa-shopping-cart"></i></div>
+                <div class="control-title">Sales Terminal</div>
+                <div class="control-subtitle">Test sales processing</div>
+            </div>
+            <div class="control-button" onclick="testReports()" id="reportsTest">
+                <div class="control-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="control-title">Reports</div>
+                <div class="control-subtitle">Test reporting system</div>
+            </div>
+        </div>
+
+        <!-- System Status Cards -->
+        <div class="status-grid">
+            <div class="status-card" id="serverCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-server"></i>
+                        Backend Server
+                    </div>
+                    <div class="card-status" id="serverStatus">Checking...</div>
+                </div>
+                <div class="card-content">
+                    <div class="metric-row">
+                        <span class="metric-label">Server URL:</span>
+                        <span class="metric-value" id="serverUrl">http://localhost:5000</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Response Time:</span>
+                        <span class="metric-value" id="serverResponse">-</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Last Check:</span>
+                        <span class="metric-value" id="serverLastCheck">Never</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-card" id="databaseCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-database"></i>
+                        MongoDB Database
+                    </div>
+                    <div class="card-status" id="databaseStatus">Checking...</div>
+                </div>
+                <div class="card-content">
+                    <div class="metric-row">
+                        <span class="metric-label">Connection:</span>
+                        <span class="metric-value" id="dbConnection">-</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Collections:</span>
+                        <span class="metric-value" id="dbCollections">-</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Total Records:</span>
+                        <span class="metric-value" id="dbRecords">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-card" id="apiCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-plug"></i>
+                        API Endpoints
+                    </div>
+                    <div class="card-status" id="apiStatus">Checking...</div>
+                </div>
+                <div class="card-content">
+                    <div class="metric-row">
+                        <span class="metric-label">Total Endpoints:</span>
+                        <span class="metric-value" id="totalEndpoints">15</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Working:</span>
+                        <span class="metric-value success" id="workingEndpoints">-</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Failed:</span>
+                        <span class="metric-value error" id="failedEndpoints">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-card" id="performanceCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Performance
+                    </div>
+                    <div class="card-status" id="performanceStatus">Monitoring...</div>
+                </div>
+                <div class="card-content">
+                    <div class="metric-row">
+                        <span class="metric-label">Avg Response:</span>
+                        <span class="metric-value" id="avgResponse">-</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Successful Requests:</span>
+                        <span class="metric-value success" id="successfulRequests">0</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Failed Requests:</span>
+                        <span class="metric-value error" id="failedRequests">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- API Testing Panel -->
+            <div class="api-panel">
+                <div class="api-header">
+                    <div>
+                        <h3><i class="fas fa-code"></i> API Endpoint Testing</h3>
+                        <p style="font-size: 0.875rem; opacity: 0.8; margin-top: 0.25rem;">Test all API routes and monitor responses</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="testAllEndpoints()">
+                        <i class="fas fa-rocket"></i>
+                        Test All
+                    </button>
+                </div>
+                <div class="api-content" id="apiEndpoints">
+                    <!-- API endpoints will be populated here -->
+                </div>
+            </div>
+
+            <!-- Terminal/Log Panel -->
+            <div class="terminal-panel">
+                <div class="terminal-header">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div class="terminal-controls">
+                            <button class="terminal-btn close"></button>
+                            <button class="terminal-btn minimize"></button>
+                            <button class="terminal-btn maximize"></button>
+                        </div>
+                        <span>System Logs & Diagnostics</span>
+                    </div>
+                    <div style="font-size: 0.75rem; opacity: 0.7;">
+                        <span id="logCount">0 entries</span>
+                    </div>
+                </div>
+                <div class="terminal-content" id="terminalLogs">
+                    <div class="log-entry info">
+                        <div class="log-timestamp">[2025-09-08 23:30:15]</div>
+                        <div class="log-message">🚀 Advanced System Diagnostics initialized</div>
+                    </div>
+                    <div class="log-entry info">
+                        <div class="log-timestamp">[2025-09-08 23:30:15]</div>
+                        <div class="log-message">📡 Starting system health checks...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fas fa-clock"></i></div>
+                <div class="metric-number" id="uptimeMetric">0s</div>
+                <div class="metric-title">System Uptime</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="metric-number" id="successRateMetric">0%</div>
+                <div class="metric-title">Success Rate</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fas fa-flash"></i></div>
+                <div class="metric-number" id="speedMetric">0ms</div>
+                <div class="metric-title">Avg Response Time</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fas fa-database"></i></div>
+                <div class="metric-number" id="dataMetric">0</div>
+                <div class="metric-title">Total Records</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-container">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">API Response Times</h3>
+                    <p class="chart-subtitle">Real-time monitoring of endpoint performance</p>
+                </div>
+                <canvas id="responseChart" width="400" height="200"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Success/Error Rate</h3>
+                    <p class="chart-subtitle">Track system reliability over time</p>
+                </div>
+                <canvas id="successChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Advanced System Diagnostics Manager
+        class AdvancedDiagnostics {
+            constructor() {
+                this.apiBaseUrl = 'http://localhost:5000/api';
+                this.startTime = Date.now();
+                this.testResults = new Map();
+                this.logCount = 0;
+                this.metrics = {
+                    totalRequests: 0,
+                    successfulRequests: 0,
+                    failedRequests: 0,
+                    totalResponseTime: 0,
+                    uptime: 0
+                };
+                this.responseChart = null;
+                this.successChart = null;
+                this.init();
+            }
+
+            init() {
+                this.log('🚀 Advanced System Diagnostics initialized', 'info');
+                this.setupEventListeners();
+                this.initializeCharts();
+                this.setupAPIEndpoints();
+                this.startSystemMonitoring();
+                this.updateSystemStatus('online', 'System Online - All Diagnostics Ready');
+            }
+
+            setupEventListeners() {
+                // Auto-refresh every 30 seconds
+                setInterval(() => this.runHealthCheck(), 30000);
+                
+                // Update uptime every second
+                setInterval(() => this.updateUptime(), 1000);
+            }
+
+            initializeCharts() {
+                // Response Time Chart
+                const responseCtx = document.getElementById('responseChart').getContext('2d');
+                this.responseChart = new Chart(responseCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Response Time (ms)',
+                            data: [],
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'API Response Times (Last 10 Tests)'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Time (ms)'
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 500
+                        }
+                    }
+                });
+
+                // Success Rate Chart
+                const successCtx = document.getElementById('successChart').getContext('2d');
+                this.successChart = new Chart(successCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Successful', 'Failed', 'Not Tested'],
+                        datasets: [{
+                            data: [0, 0, 100],
+                            backgroundColor: [
+                                '#22c55e',
+                                '#ef4444',
+                                '#94a3b8'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Overall System Health'
+                            }
+                        },
+                        animation: {
+                            animateScale: true,
+                            duration: 1000
+                        }
+                    }
+                });
+            }
+
+            setupAPIEndpoints() {
+                const endpoints = [
+                    { method: 'GET', path: '/health', description: 'Health Check' },
+                    { method: 'GET', path: '/stats', description: 'System Statistics' },
+                    { method: 'GET', path: '/products', description: 'Get All Products' },
+                    { method: 'POST', path: '/products', description: 'Create Product' },
+                    { method: 'GET', path: '/categories', description: 'Get All Categories' },
+                    { method: 'POST', path: '/categories', description: 'Create Category' },
+                    { method: 'GET', path: '/customers', description: 'Get All Customers' },
+                    { method: 'POST', path: '/customers', description: 'Create Customer' },
+                    { method: 'GET', path: '/sales', description: 'Get All Sales' },
+                    { method: 'POST', path: '/sales', description: 'Create Sale' },
+                    { method: 'GET', path: '/sales/reports', description: 'Sales Reports' },
+                    { method: 'GET', path: '/sales/dashboard/stats', description: 'Dashboard Stats' },
+                    { method: 'POST', path: '/sample-data', description: 'Add Sample Data' }
+                ];
+
+                const container = document.getElementById('apiEndpoints');
+                container.innerHTML = endpoints.map((endpoint, index) => `
+                    <div class="api-endpoint" id="endpoint-${index}">
+                        <div class="api-method ${endpoint.method.toLowerCase()}">${endpoint.method}</div>
+                        <div class="api-path">${this.apiBaseUrl}${endpoint.path}</div>
+                        <button class="api-test-btn" onclick="diagnostics.testEndpoint('${endpoint.method}', '${endpoint.path}', ${index})">
+                            Test
+                        </button>
+                        <div class="api-result" id="result-${index}" style="display: none;"></div>
+                    </div>
+                `).join('');
+            }
+
+            async testEndpoint(method, path, index) {
+                const resultElement = document.getElementById(`result-${index}`);
+                const endpointElement = document.getElementById(`endpoint-${index}`);
+                
+                resultElement.style.display = 'block';
+                resultElement.className = 'api-result';
+                resultElement.innerHTML = '<i class="loading-spinner"></i> Testing...';
+                
+                const startTime = Date.now();
+                
+                try {
+                    let response;
+                    const url = this.apiBaseUrl + path;
+                    
+                    if (method === 'GET') {
+                        response = await fetch(url);
+                    } else if (method === 'POST') {
+                        // Sample data for POST requests
+                        const sampleData = this.getSampleData(path);
+                        response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(sampleData)
+                        });
+                    }
+                    
+                    const responseTime = Date.now() - startTime;
+                    this.metrics.totalRequests++;
+                    this.metrics.totalResponseTime += responseTime;
+                    
+                    if (response.ok) {
+                        this.metrics.successfulRequests++;
+                        resultElement.className = 'api-result success';
+                        resultElement.innerHTML = `✅ ${response.status} OK - ${responseTime}ms`;
+                        endpointElement.style.borderLeft = '4px solid #22c55e';
+                        this.log(`✅ ${method} ${path} - Success (${responseTime}ms)`, 'success');
+                        
+                        // Update response chart
+                        this.updateResponseChart(path, responseTime);
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                } catch (error) {
+                    this.metrics.failedRequests++;
+                    resultElement.className = 'api-result error';
+                    resultElement.innerHTML = `❌ ${error.message}`;
+                    endpointElement.style.borderLeft = '4px solid #ef4444';
+                    this.log(`❌ ${method} ${path} - ${error.message}`, 'error');
+                }
+                
+                this.updateMetrics();
+                this.updateSuccessChart();
+            }
+
+            getSampleData(path) {
+                const sampleData = {
+                    '/products': {
+                        name: 'Test Product',
+                        category: 'Test Category',
+                        price: 99.99,
+                        stock: 100,
+                        description: 'Test product for API testing'
+                    },
+                    '/categories': {
+                        name: 'Test Category',
+                        description: 'Test category for API testing',
+                        color: '#2563eb',
+                        icon: 'fas fa-tag'
+                    },
+                    '/customers': {
+                        name: 'Test Customer',
+                        phone: '9999999999',
+                        email: 'test@example.com',
+                        address: 'Test Address'
+                    },
+                    '/sales': {
+                        products: [],
+                        paymentMethod: 'Cash',
+                        notes: 'Test sale'
+                    }
+                };
+                
+                return sampleData[path] || {};
+            }
+
+            async runHealthCheck() {
+                this.log('🔍 Running system health check...', 'info');
+                
+                // Test server connectivity
+                await this.testServerHealth();
+                
+                // Test database connectivity (through API)
+                await this.testDatabaseHealth();
+                
+                // Update overall system status
+                this.updateSystemHealth();
+            }
+
+            async testServerHealth() {
+                const startTime = Date.now();
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/health`);
+                    const responseTime = Date.now() - startTime;
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateServerCard('online', responseTime, data);
+                        this.log(`🟢 Server health check passed (${responseTime}ms)`, 'success');
+                    } else {
+                        throw new Error(`Server returned ${response.status}`);
+                    }
+                } catch (error) {
+                    this.updateServerCard('error', 0, null);
+                    this.log(`🔴 Server health check failed: ${error.message}`, 'error');
+                }
+            }
+
+            async testDatabaseHealth() {
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/stats`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateDatabaseCard('online', data);
+                        this.log(`🟢 Database connectivity confirmed`, 'success');
+                    } else {
+                        throw new Error(`Database check failed`);
+                    }
+                } catch (error) {
+                    this.updateDatabaseCard('error', null);
+                    this.log(`🔴 Database connectivity failed: ${error.message}`, 'error');
+                }
+            }
+
+            updateServerCard(status, responseTime, data) {
+                const card = document.getElementById('serverCard');
+                const statusElement = document.getElementById('serverStatus');
+                const responseElement = document.getElementById('serverResponse');
+                const lastCheckElement = document.getElementById('serverLastCheck');
+                
+                card.className = `status-card ${status}`;
+                statusElement.className = `card-status ${status}`;
+                statusElement.textContent = status === 'online' ? 'Online' : 'Offline';
+                responseElement.textContent = responseTime > 0 ? `${responseTime}ms` : 'N/A';
+                lastCheckElement.textContent = new Date().toLocaleTimeString();
+                
+                if (data) {
+                    responseElement.className = responseTime < 200 ? 'metric-value success' : 
+                                               responseTime < 500 ? 'metric-value' : 'metric-value error';
+                }
+            }
+
+            updateDatabaseCard(status, data) {
+                const card = document.getElementById('databaseCard');
+                const statusElement = document.getElementById('databaseStatus');
+                const connectionElement = document.getElementById('dbConnection');
+                const collectionsElement = document.getElementById('dbCollections');
+                const recordsElement = document.getElementById('dbRecords');
+                
+                card.className = `status-card ${status}`;
+                statusElement.className = `card-status ${status}`;
+                statusElement.textContent = status === 'online' ? 'Connected' : 'Disconnected';
+                
+                if (data) {
+                    connectionElement.textContent = 'Active';
+                    connectionElement.className = 'metric-value success';
+                    collectionsElement.textContent = Object.keys(data).length;
+                    recordsElement.textContent = Object.values(data).reduce((sum, count) => sum + count, 0);
+                    
+                    // Update data metric
+                    document.getElementById('dataMetric').textContent = 
+                        Object.values(data).reduce((sum, count) => sum + count, 0);
+                } else {
+                    connectionElement.textContent = 'Failed';
+                    connectionElement.className = 'metric-value error';
+                    collectionsElement.textContent = 'N/A';
+                    recordsElement.textContent = 'N/A';
+                }
+            }
+
+            updateMetrics() {
+                // Update performance metrics
+                const avgResponse = this.metrics.totalRequests > 0 ? 
+                    Math.round(this.metrics.totalResponseTime / this.metrics.totalRequests) : 0;
+                
+                document.getElementById('avgResponse').textContent = `${avgResponse}ms`;
+                document.getElementById('successfulRequests').textContent = this.metrics.successfulRequests;
+                document.getElementById('failedRequests').textContent = this.metrics.failedRequests;
+                document.getElementById('workingEndpoints').textContent = this.metrics.successfulRequests;
+                document.getElementById('failedEndpoints').textContent = this.metrics.failedRequests;
+                
+                // Update metric cards
+                const successRate = this.metrics.totalRequests > 0 ? 
+                    Math.round((this.metrics.successfulRequests / this.metrics.totalRequests) * 100) : 0;
+                
+                document.getElementById('successRateMetric').textContent = `${successRate}%`;
+                document.getElementById('speedMetric').textContent = `${avgResponse}ms`;
+                
+                // Update API status card
+                const apiCard = document.getElementById('apiCard');
+                const apiStatus = document.getElementById('apiStatus');
+                
+                if (this.metrics.failedRequests > this.metrics.successfulRequests) {
+                    apiCard.className = 'status-card error';
+                    apiStatus.className = 'card-status error';
+                    apiStatus.textContent = 'Issues Detected';
+                } else if (this.metrics.successfulRequests > 0) {
+                    apiCard.className = 'status-card online';
+                    apiStatus.className = 'card-status online';
+                    apiStatus.textContent = 'Operational';
+                } else {
+                    apiCard.className = 'status-card warning';
+                    apiStatus.className = 'card-status warning';
+                    apiStatus.textContent = 'Not Tested';
+                }
+                
+                // Update performance card
+                const performanceCard = document.getElementById('performanceCard');
+                const performanceStatus = document.getElementById('performanceStatus');
+                
+                if (avgResponse < 200) {
+                    performanceCard.className = 'status-card online';
+                    performanceStatus.className = 'card-status online';
+                    performanceStatus.textContent = 'Excellent';
+                } else if (avgResponse < 500) {
+                    performanceCard.className = 'status-card warning';
+                    performanceStatus.className = 'card-status warning';
+                    performanceStatus.textContent = 'Good';
+                } else {
+                    performanceCard.className = 'status-card error';
+                    performanceStatus.className = 'card-status error';
+                    performanceStatus.textContent = 'Slow';
+                }
+            }
+
+            updateResponseChart(endpoint, responseTime) {
+                if (this.responseChart.data.labels.length >= 10) {
+                    this.responseChart.data.labels.shift();
+                    this.responseChart.data.datasets[0].data.shift();
+                }
+                
+                this.responseChart.data.labels.push(endpoint.split('/').pop() || 'root');
+                this.responseChart.data.datasets[0].data.push(responseTime);
+                this.responseChart.update();
+            }
+
+            updateSuccessChart() {
+                const total = this.metrics.totalRequests;
+                const successful = this.metrics.successfulRequests;
+                const failed = this.metrics.failedRequests;
+                const notTested = Math.max(0, 13 - total); // 13 total endpoints
+                
+                this.successChart.data.datasets[0].data = [
+                    successful,
+                    failed,
+                    notTested
+                ];
+                this.successChart.update();
+            }
+
+            updateUptime() {
+                const uptime = Date.now() - this.startTime;
+                const seconds = Math.floor(uptime / 1000);
+                const minutes = Math.floor(seconds / 60);
+                const hours = Math.floor(minutes / 60);
+                
+                let uptimeText;
+                if (hours > 0) {
+                    uptimeText = `${hours}h ${minutes % 60}m`;
+                } else if (minutes > 0) {
+                    uptimeText = `${minutes}m ${seconds % 60}s`;
+                } else {
+                    uptimeText = `${seconds}s`;
+                }
+                
+                document.getElementById('uptimeMetric').textContent = uptimeText;
+                this.metrics.uptime = uptime;
+            }
+
+            updateSystemStatus(status, message) {
+                const indicator = document.getElementById('systemStatus');
+                const statusText = document.getElementById('systemStatusText');
+                
+                indicator.className = `status-indicator ${status}`;
+                statusText.textContent = message;
+            }
+
+            updateSystemHealth() {
+                const serverOnline = document.getElementById('serverCard').classList.contains('online');
+                const databaseOnline = document.getElementById('databaseCard').classList.contains('online');
+                const apiHealthy = this.metrics.successfulRequests >= this.metrics.failedRequests;
+                
+                if (serverOnline && databaseOnline && apiHealthy) {
+                    this.updateSystemStatus('online', 'All Systems Operational');
+                } else if (!serverOnline || !databaseOnline) {
+                    this.updateSystemStatus('error', 'Critical Systems Offline');
+                } else {
+                    this.updateSystemStatus('testing', 'Some Issues Detected');
+                }
+            }
+
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleString();
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry ${type}`;
+                logEntry.innerHTML = `
+                    <div class="log-timestamp">[${timestamp}]</div>
+                    <div class="log-message">${message}</div>
+                `;
+                
+                const terminal = document.getElementById('terminalLogs');
+                terminal.appendChild(logEntry);
+                terminal.scrollTop = terminal.scrollHeight;
+                
+                this.logCount++;
+                document.getElementById('logCount').textContent = `${this.logCount} entries`;
+                
+                // Keep only last 50 log entries
+                if (terminal.children.length > 50) {
+                    terminal.removeChild(terminal.firstChild);
+                }
+            }
+
+            // Individual module testing functions
+            async testDashboard() {
+                this.setModuleStatus('dashboardTest', 'running');
+                this.log('🏠 Testing dashboard module...', 'info');
+                
+                try {
+                    await this.testEndpoint('GET', '/dashboard/stats', -1);
+                    await this.testEndpoint('GET', '/stats', -1);
+                    this.setModuleStatus('dashboardTest', 'success');
+                    this.log('✅ Dashboard module test completed successfully', 'success');
+                } catch (error) {
+                    this.setModuleStatus('dashboardTest', 'error');
+                    this.log(`❌ Dashboard module test failed: ${error.message}`, 'error');
+                }
+            }
+
+            async testProducts() {
+                this.setModuleStatus('productsTest', 'running');
+                this.log('📦 Testing products module...', 'info');
+                
+                try {
+                    await this.testEndpoint('GET', '/products', -1);
+                    this.setModuleStatus('productsTest', 'success');
+                    this.log('✅ Products module test completed successfully', 'success');
+                } catch (error) {
+                    this.setModuleStatus('productsTest', 'error');
+                    this.log(`❌ Products module test failed: ${error.message}`, 'error');
+                }
+            }
+
+            async testCategories() {
+                this.setModuleStatus('categoriesTest', 'running');
+                this.log('🏷️ Testing categories module...', 'info');
+                
+                try {
+                    await this.testEndpoint('GET', '/categories', -1);
+                    this.setModuleStatus('categoriesTest', 'success');
+                    this.log('✅ Categories module test completed successfully', 'success');
+                } catch (error) {
+                    this.setModuleStatus('categoriesTest', 'error');
+                    this.log(`❌ Categories module test failed: ${error.message}`, 'error');
+                }
+            }
+
+            async testCustomers() {
+                this.setModuleStatus('customersTest', 'running');
+                this.log('👥 Testing customers module...', 'info');
+                
+                try {
+                    await this.testEndpoint('GET', '/customers', -1);
+                    this.setModuleStatus('customersTest', 'success');
+                    this.log('✅ Customers module test completed successfully', 'success');
+                } catch (error) {
+                    this.setModuleStatus('customersTest', 'error');
+                    this.log(`❌ Customers module test failed: ${error.message}`, 'error');
+                }
+            }
+
+            async testSales() {
+                this.setModuleStatus('salesTest', 'running');
+                this.log('💰 Testing sales module...', 'info');
+                
+                try {
+                    await this.testEndpoint('GET', '/sales', -1);
+                    await this.testEndpoint('GET', '/sales/reports', -1);
+                    this.setModuleStatus('salesTest', 'success');
+                    this.log('✅ Sales module test completed successfully', 'success');
+                } catch (error) {
+                    this.setModuleStatus('salesTest', 'error');
+                    this.log(`❌ Sales module test failed: ${error.message}`, 'error');
+                }
+            }
+
+            async testReports() {
+                this.setModuleStatus('reportsTest', 'running');
+                this.log('📊 Testing reports module...', 'info');
+                
+                try {
+                    await this.testEndpoint('GET', '/sales/reports', -1);
+                    this.setModuleStatus('reportsTest', 'success');
+                    this.log('✅ Reports module test completed successfully', 'success');
+                } catch (error) {
+                    this.setModuleStatus('reportsTest', 'error');
+                    this.log(`❌ Reports module test failed: ${error.message}`, 'error');
+                }
+            }
+
+            setModuleStatus(moduleId, status) {
+                const element = document.getElementById(moduleId);
+                element.className = `control-button ${status}`;
+                
+                if (status === 'running') {
+                    element.querySelector('.control-icon').innerHTML = '<div class="loading-spinner"></div>';
+                } else if (status === 'success') {
+                    element.querySelector('.control-icon').innerHTML = '<i class="fas fa-check-circle"></i>';
+                } else if (status === 'error') {
+                    element.querySelector('.control-icon').innerHTML = '<i class="fas fa-times-circle"></i>';
+                }
+            }
+
+            async runFullSystemTest() {
+                this.log('🚀 Starting full system test...', 'info');
+                
+                // Reset all module statuses
+                const modules = ['dashboardTest', 'productsTest', 'categoriesTest', 'customersTest', 'salesTest', 'reportsTest'];
+                modules.forEach(moduleId => {
+                    const element = document.getElementById(moduleId);
+                    element.className = 'control-button';
+                    element.querySelector('.control-icon').innerHTML = element.querySelector('.control-icon').getAttribute('data-original') || '<i class="fas fa-circle"></i>';
+                });
+                
+                // Test all modules sequentially
+                await this.testDashboard();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                await this.testProducts();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                await this.testCategories();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                await this.testCustomers();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                await this.testSales();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                await this.testReports();
+                
+                this.log('🏁 Full system test completed', 'success');
+            }
+
+            async testAllEndpoints() {
+                this.log('🔥 Testing all API endpoints...', 'info');
+                const endpoints = document.querySelectorAll('.api-test-btn');
+                
+                for (let i = 0; i < endpoints.length; i++) {
+                    endpoints[i].click();
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                }
+                
+                this.log('🏁 All endpoint tests completed', 'success');
+            }
+
+            clearLogs() {
+                document.getElementById('terminalLogs').innerHTML = '';
+                this.logCount = 0;
+                document.getElementById('logCount').textContent = '0 entries';
+                this.log('🧹 Logs cleared', 'info');
+            }
+        }
+
+        // Global functions for HTML onclick handlers
+        function testDashboard() { diagnostics.testDashboard(); }
+        function testProducts() { diagnostics.testProducts(); }
+        function testCategories() { diagnostics.testCategories(); }
+        function testCustomers() { diagnostics.testCustomers(); }
+        function testSales() { diagnostics.testSales(); }
+        function testReports() { diagnostics.testReports(); }
+        function runFullSystemTest() { diagnostics.runFullSystemTest(); }
+        function testAllEndpoints() { diagnostics.testAllEndpoints(); }
+        function clearLogs() { diagnostics.clearLogs(); }
+
+        // Initialize diagnostics system
+        let diagnostics;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Store original icons
+            document.querySelectorAll('.control-icon').forEach(icon => {
+                icon.setAttribute('data-original', icon.innerHTML);
+            });
+            
+            diagnostics = new AdvancedDiagnostics();
+        });
+
+    </script>
+</body>
+</html>

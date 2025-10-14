@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery Shop - Complete Test Page</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .connection-status {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e74c3c;
+        }
+
+        .status-dot.connected {
+            background: #27ae60;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.4);
+        }
+
+        .btn.btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        }
+
+        .btn.btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .btn.btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #212529;
+        }
+
+        .data-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .data-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+        }
+
+        .data-item:hover {
+            background: #f1f3f4;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-info h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .item-info p {
+            color: #6c757d;
+            font-size: 13px;
+            margin: 2px 0;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .item-actions .btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .logs {
+            grid-column: 1 / -1;
+            background: #343a40;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .logs .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .logs .log-success {
+            background: rgba(40, 167, 69, 0.2);
+            border-left: 3px solid #28a745;
+        }
+
+        .logs .log-error {
+            background: rgba(220, 53, 69, 0.2);
+            border-left: 3px solid #dc3545;
+        }
+
+        .logs .log-info {
+            background: rgba(0, 123, 255, 0.2);
+            border-left: 3px solid #007bff;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .connection-status {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .alert {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-store"></i> Grocery Shop - Complete Test System</h1>
+            <p>Test all backend connections and CRUD operations</p>
+            
+            <div class="connection-status">
+                <div class="status-item">
+                    <div class="status-dot" id="backendStatus"></div>
+                    <span>Backend Server</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot" id="dbStatus"></div>
+                    <span>MongoDB Database</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Customer Management Section -->
+            <div class="section">
+                <h2><i class="fas fa-users"></i> Customer Management</h2>
+                
+                <div class="alert" id="customerAlert"></div>
+                
+                <form id="customerForm">
+                    <div class="form-group">
+                        <label>Name *</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone *</label>
+                        <input type="tel" id="customerPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="customerEmail">
+                    </div>
+                    <div class="form-group">
+                        <label>GST Number</label>
+                        <input type="text" id="customerGST">
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="customerAddress" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+    <label>Category *</label>
+    <select id="productCategory" required>
+        <option value="">Select Category</option>
+        <option value="Fruits">Fruits</option>
+        <option value="Vegetables">Vegetables</option>
+        <option value="Beverages">Beverages</option>
+        <option value="Snacks">Snacks</option>
+        <option value="Dairy">Dairy</option>
+        <option value="Bakery">Bakery</option>
+        <option value="Meat">Meat</option>
+        <option value="Household">Household</option>
+        <option value="Spices">Spices</option>
+        <option value="Grains">Grains</option>
+    </select>
+</div>
+
+                    <button type="submit" class="btn">
+                        <i class="fas fa-plus"></i> Add Customer
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="loadCustomers()">
+                        <i class="fas fa-refresh"></i> Load All
+                    </button>
+                    <button type="button" class="btn btn-warning" onclick="clearCustomerForm()">
+                        <i class="fas fa-broom"></i> Clear Form
+                    </button>
+                </form>
+
+                <div class="data-list" id="customersList">
+                    <div class="data-item">
+                        <div class="item-info">
+                            <h4>Loading customers...</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Management Section -->
+            <div class="section">
+                <h2><i class="fas fa-box"></i> Product Management</h2>
+                
+                <div class="alert" id="productAlert"></div>
+                
+                <form id="productForm">
+                    <div class="form-group">
+                        <label>Product Name *</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <input type="text" id="productCategory" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Price *</label>
+                        <input type="number" id="productPrice" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Quantity *</label>
+                        <input type="number" id="productStock" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="productDescription" rows="2"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="loadProducts()">
+                        <i class="fas fa-refresh"></i> Load All
+                    </button>
+                    <button type="button" class="btn btn-warning" onclick="clearProductForm()">
+                        <i class="fas fa-broom"></i> Clear Form
+                    </button>
+                </form>
+
+                <div class="data-list" id="productsList">
+                    <div class="data-item">
+                        <div class="item-info">
+                            <h4>Loading products...</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Logs -->
+            <div class="logs" id="systemLogs">
+                <div class="log-entry log-info">System initialized - Testing connections...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        let editingCustomer = null;
+        let editingProduct = null;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            checkConnections();
+            loadCustomers();
+            loadProducts();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('customerForm').addEventListener('submit', handleCustomerSubmit);
+            document.getElementById('productForm').addEventListener('submit', handleProductSubmit);
+        }
+
+        // Connection Status Check
+        async function checkConnections() {
+            log('Checking server connections...', 'info');
+            
+            try {
+                // Check backend server
+                const healthResponse = await fetch(`${API_BASE}/health`);
+                if (healthResponse.ok) {
+                    document.getElementById('backendStatus').classList.add('connected');
+                    log('✅ Backend server connected successfully', 'success');
+                } else {
+                    throw new Error('Backend server not responding');
+                }
+
+                // Check database through stats endpoint
+                const statsResponse = await fetch(`${API_BASE}/stats`);
+                if (statsResponse.ok) {
+                    document.getElementById('dbStatus').classList.add('connected');
+                    log('✅ MongoDB database connected successfully', 'success');
+                } else {
+                    throw new Error('Database connection failed');
+                }
+            } catch (error) {
+                log(`❌ Connection error: ${error.message}`, 'error');
+            }
+        }
+
+        // Customer Management Functions
+        async function handleCustomerSubmit(event) {
+            event.preventDefault();
+            
+            const customerData = {
+                name: document.getElementById('customerName').value.trim(),
+                phone: document.getElementById('customerPhone').value.trim(),
+                email: document.getElementById('customerEmail').value.trim(),
+                gstNumber: document.getElementById('customerGST').value.trim(),
+                address: document.getElementById('customerAddress').value.trim()
+            };
+
+            if (!customerData.name || !customerData.phone) {
+                showAlert('customerAlert', 'Name and Phone are required!', 'error');
+                return;
+            }
+
+            try {
+                log(`📝 ${editingCustomer ? 'Updating' : 'Adding'} customer: ${customerData.name}`, 'info');
+                
+                let response;
+                if (editingCustomer) {
+                    response = await fetch(`${API_BASE}/customers/${editingCustomer}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(customerData)
+                    });
+                } else {
+                    response = await fetch(`${API_BASE}/customers`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(customerData)
+                    });
+                }
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showAlert('customerAlert', `Customer ${editingCustomer ? 'updated' : 'added'} successfully!`, 'success');
+                    log(`✅ Customer ${editingCustomer ? 'updated' : 'added'}: ${customerData.name}`, 'success');
+                    clearCustomerForm();
+                    loadCustomers();
+                } else {
+                    throw new Error(result.error || result.message || 'Operation failed');
+                }
+            } catch (error) {
+                showAlert('customerAlert', `Error: ${error.message}`, 'error');
+                log(`❌ Customer operation failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadCustomers() {
+            try {
+                log('📥 Loading customers...', 'info');
+                const response = await fetch(`${API_BASE}/customers`);
+                const data = await response.json();
+                
+                if (response.ok && data.customers) {
+                    displayCustomers(data.customers);
+                    log(`✅ Loaded ${data.customers.length} customers`, 'success');
+                } else {
+                    throw new Error(data.error || 'Failed to load customers');
+                }
+            } catch (error) {
+                document.getElementById('customersList').innerHTML = `
+                    <div class="data-item">
+                        <div class="item-info">
+                            <h4 style="color: #dc3545;">Error loading customers</h4>
+                            <p>${error.message}</p>
+                        </div>
+                    </div>
+                `;
+                log(`❌ Failed to load customers: ${error.message}`, 'error');
+            }
+        }
+
+        function displayCustomers(customers) {
+            const container = document.getElementById('customersList');
+            
+            if (customers.length === 0) {
+                container.innerHTML = `
+                    <div class="data-item">
+                        <div class="item-info">
+                            <h4>No customers found</h4>
+                            <p>Add your first customer using the form above</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = customers.map(customer => `
+                <div class="data-item">
+                    <div class="item-info">
+                        <h4>${customer.name}</h4>
+                        <p><i class="fas fa-phone"></i> ${customer.phone}</p>
+                        <p><i class="fas fa-envelope"></i> ${customer.email || 'No email'}</p>
+                        <p><i class="fas fa-id-card"></i> ${customer.customerId}</p>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn" onclick="editCustomer('${customer._id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteCustomer('${customer._id}', '${customer.name}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function editCustomer(id) {
+            try {
+                const response = await fetch(`${API_BASE}/customers/${id}`);
+                const data = await response.json();
+                
+                if (response.ok && data.customer) {
+                    const customer = data.customer;
+                    document.getElementById('customerName').value = customer.name;
+                    document.getElementById('customerPhone').value = customer.phone;
+                    document.getElementById('customerEmail').value = customer.email || '';
+                    document.getElementById('customerGST').value = customer.gstNumber || '';
+                    document.getElementById('customerAddress').value = customer.address || '';
+                    
+                    editingCustomer = id;
+                    log(`📝 Editing customer: ${customer.name}`, 'info');
+                }
+            } catch (error) {
+                log(`❌ Error loading customer for edit: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteCustomer(id, name) {
+            if (!confirm(`Are you sure you want to delete customer "${name}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/customers/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showAlert('customerAlert', `Customer "${name}" deleted successfully!`, 'success');
+                    log(`✅ Customer deleted: ${name}`, 'success');
+                    loadCustomers();
+                } else {
+                    const data = await response.json();
+                    throw new Error(data.error || 'Delete failed');
+                }
+            } catch (error) {
+                showAlert('customerAlert', `Error deleting customer: ${error.message}`, 'error');
+                log(`❌ Delete failed: ${error.message}`, 'error');
+            }
+        }
+
+        function clearCustomerForm() {
+            document.getElementById('customerForm').reset();
+            editingCustomer = null;
+            log('🧹 Customer form cleared', 'info');
+        }
+
+        // Product Management Functions
+        async function handleProductSubmit(event) {
+            event.preventDefault();
+            
+            const productData = {
+                name: document.getElementById('productName').value.trim(),
+                category: document.getElementById('productCategory').value.trim(),
+                price: parseFloat(document.getElementById('productPrice').value),
+                stock: parseInt(document.getElementById('productStock').value),
+                description: document.getElementById('productDescription').value.trim()
+            };
+
+            if (!productData.name || !productData.category || !productData.price || !productData.stock) {
+                showAlert('productAlert', 'All required fields must be filled!', 'error');
+                return;
+            }
+
+            try {
+                log(`📦 ${editingProduct ? 'Updating' : 'Adding'} product: ${productData.name}`, 'info');
+                
+                let response;
+                if (editingProduct) {
+                    response = await fetch(`${API_BASE}/products/${editingProduct}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(productData)
+                    });
+                } else {
+                    response = await fetch(`${API_BASE}/products`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(productData)
+                    });
+                }
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showAlert('productAlert', `Product ${editingProduct ? 'updated' : 'added'} successfully!`, 'success');
+                    log(`✅ Product ${editingProduct ? 'updated' : 'added'}: ${productData.name}`, 'success');
+                    clearProductForm();
+                    loadProducts();
+                } else {
+                    throw new Error(result.error || result.message || 'Operation failed');
+                }
+            } catch (error) {
+                showAlert('productAlert', `Error: ${error.message}`, 'error');
+                log(`❌ Product operation failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadProducts() {
+            try {
+                log('📥 Loading products...', 'info');
+                const response = await fetch(`${API_BASE}/products`);
+                const data = await response.json();
+                
+                if (response.ok && (data.products || data)) {
+                    const products = data.products || data;
+                    displayProducts(Array.isArray(products) ? products : []);
+                    log(`✅ Loaded ${Array.isArray(products) ? products.length : 0} products`, 'success');
+                } else {
+                    throw new Error(data.error || 'Failed to load products');
+                }
+            } catch (error) {
+                document.getElementById('productsList').innerHTML = `
+                    <div class="data-item">
+                        <div class="item-info">
+                            <h4 style="color: #dc3545;">Error loading products</h4>
+                            <p>${error.message}</p>
+                        </div>
+                    </div>
+                `;
+                log(`❌ Failed to load products: ${error.message}`, 'error');
+            }
+        }
+
+        function displayProducts(products) {
+            const container = document.getElementById('productsList');
+            
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div class="data-item">
+                        <div class="item-info">
+                            <h4>No products found</h4>
+                            <p>Add your first product using the form above</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = products.map(product => `
+                <div class="data-item">
+                    <div class="item-info">
+                        <h4>${product.name}</h4>
+                        <p><i class="fas fa-tag"></i> ${product.category}</p>
+                        <p><i class="fas fa-rupee-sign"></i> ${product.price} | <i class="fas fa-boxes"></i> Stock: ${product.stock}</p>
+                        <p>${product.description || 'No description'}</p>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn" onclick="editProduct('${product._id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteProduct('${product._id}', '${product.name}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function editProduct(id) {
+            try {
+                const response = await fetch(`${API_BASE}/products/${id}`);
+                const data = await response.json();
+                
+                if (response.ok && (data.product || data)) {
+                    const product = data.product || data;
+                    document.getElementById('productName').value = product.name;
+                    document.getElementById('productCategory').value = product.category;
+                    document.getElementById('productPrice').value = product.price;
+                    document.getElementById('productStock').value = product.stock;
+                    document.getElementById('productDescription').value = product.description || '';
+                    
+                    editingProduct = id;
+                    log(`📝 Editing product: ${product.name}`, 'info');
+                }
+            } catch (error) {
+                log(`❌ Error loading product for edit: ${error.message}`, 'error');
+            }
+        }
+// In your test-page.html or wherever you fetch data
+async function loadProducts() {
+    try {
+        console.log('🔍 Fetching products...');
+        const response = await fetch('http://localhost:5000/api/products');
+        console.log('📡 Response status:', response.status);
+        
+        const data = await response.json();
+        console.log('📦 Full API response:', data);
+        console.log('📦 Products array:', data.products);
+        
+        if (response.ok && data.products) {
+            console.log('✅ Found', data.products.length, 'products');
+            displayProducts(data.products);  // Make sure this function exists
+        } else {
+            console.error('❌ No products in response');
+        }
+    } catch (error) {
+        console.error('❌ Fetch error:', error);
+    }
+}
+
+// Call this function
+loadProducts();
+
+        async function deleteProduct(id, name) {
+            if (!confirm(`Are you sure you want to delete product "${name}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/products/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showAlert('productAlert', `Product "${name}" deleted successfully!`, 'success');
+                    log(`✅ Product deleted: ${name}`, 'success');
+                    loadProducts();
+                } else {
+                    const data = await response.json();
+                    throw new Error(data.error || 'Delete failed');
+                }
+            } catch (error) {
+                showAlert('productAlert', `Error deleting product: ${error.message}`, 'error');
+                log(`❌ Delete failed: ${error.message}`, 'error');
+            }
+        }
+
+        function clearProductForm() {
+            document.getElementById('productForm').reset();
+            editingProduct = null;
+            log('🧹 Product form cleared', 'info');
+        }
+
+        // Utility Functions
+        function showAlert(elementId, message, type) {
+            const alertElement = document.getElementById(elementId);
+            alertElement.className = `alert alert-${type} show`;
+            alertElement.textContent = message;
+            
+            setTimeout(() => {
+                alertElement.classList.remove('show');
+            }, 5000);
+        }
+
+        function log(message, type = 'info') {
+            const logsContainer = document.getElementById('systemLogs');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+            
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        // Test connection every 30 seconds
+        setInterval(checkConnections, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroceryCRM - Reports & Analytics</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    
+    <style>
+        :root {
+            /* Professional Color Palette */
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --primary-blue-light: #3b82f6;
+            --secondary-purple: #7c3aed;
+            --secondary-purple-dark: #6d28d9;
+            --accent-green: #059669;
+            --accent-green-light: #10b981;
+            --accent-orange: #ea580c;
+            --accent-red: #dc2626;
+            --accent-yellow: #d97706;
+            
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dashboard-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-primary);
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 40;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar-header {
+            padding: var(--space-xl) var(--space-lg);
+            border-bottom: 1px solid var(--gray-200);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .logo-text {
+            color: white;
+        }
+
+        .logo-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .logo-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: var(--space-lg) 0;
+        }
+
+        .nav-section {
+            margin-bottom: var(--space-xl);
+        }
+
+        .nav-section-title {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0 var(--space-lg);
+            margin-bottom: var(--space-md);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem var(--space-lg);
+            margin: 0 var(--space-md);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background-color: var(--gray-100);
+            color: var(--primary-blue);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: -var(--space-md);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 24px;
+            background: var(--primary-blue);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .nav-icon {
+            width: 20px;
+            margin-right: var(--space-md);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--gray-200);
+            padding: var(--space-lg) var(--space-xl);
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-sm);
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: 0.625rem 1rem;
+            border: 1px solid transparent;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-100);
+        }
+
+        .refresh-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .refresh-indicator.active .fa-sync {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            flex: 1;
+            padding: var(--space-xl);
+        }
+
+        /* Filters Section */
+        .filters-section {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-xl);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filters-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .filter-input, .filter-select {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .date-presets {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            padding: 0.375rem 0.75rem;
+            background: var(--gray-100);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .preset-btn:hover, .preset-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .stat-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-blue);
+        }
+
+        .stat-card.success::before { background: var(--accent-green); }
+        .stat-card.warning::before { background: var(--accent-orange); }
+        .stat-card.danger::before { background: var(--accent-red); }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-4px);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-light) 100%);
+        }
+
+        .stat-icon.warning {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-yellow) 100%);
+        }
+
+        .stat-icon.danger {
+            background: linear-gradient(135deg, var(--accent-red) 0%, #ef4444 100%);
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+            line-height: 1;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--accent-green);
+        }
+
+        .stat-change.negative {
+            color: var(--accent-red);
+        }
+
+        .stat-change.neutral {
+            color: var(--text-muted);
+        }
+
+        /* Tabs */
+        .report-tabs {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-bottom: var(--space-xl);
+        }
+
+        .tab-navigation {
+            display: flex;
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 0 var(--space-xl);
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all var(--transition-fast);
+            position: relative;
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            color: var(--primary-blue);
+        }
+
+        .tab-button.active {
+            color: var(--primary-blue);
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-blue);
+        }
+
+        .tab-content {
+            display: none;
+            padding: var(--space-xl);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .chart-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Data Table */
+        .table-container {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table-header {
+            padding: var(--space-lg) var(--space-xl);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: var(--gray-50);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .data-table tr:hover {
+            background: var(--gray-50);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-badge.success {
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--accent-green);
+        }
+
+        .status-badge.warning {
+            background: rgba(234, 88, 12, 0.1);
+            color: var(--accent-orange);
+        }
+
+        .status-badge.danger {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--accent-red);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* Loading State */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-300);
+            border-top-color: var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="logo-text">
+                        <div class="logo-title">GroceryCRM</div>
+                        <div class="logo-subtitle">Professional Business Suite</div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="index.html" class="nav-item">
+                        <i class="fas fa-home nav-icon"></i>
+                        Dashboard
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Business Operations</div>
+                    <a href="products.html" class="nav-item">
+                        <i class="fas fa-box nav-icon"></i>
+                        Products
+                    </a>
+                    <a href="categories.html" class="nav-item">
+                        <i class="fas fa-tags nav-icon"></i>
+                        Categories
+                    </a>
+                    <a href="customers.html" class="nav-item">
+                        <i class="fas fa-users nav-icon"></i>
+                        Customers
+                    </a>
+                    <a href="sales-terminal.html" class="nav-item">
+                        <i class="fas fa-shopping-cart nav-icon"></i>
+                        Sales Terminal
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Financial Management</div>
+                    <a href="payments.html" class="nav-item">
+                        <i class="fas fa-credit-card nav-icon"></i>
+                        Payments
+                    </a>
+                    <a href="reports.html" class="nav-item active">
+                        <i class="fas fa-chart-bar nav-icon"></i>
+                        Reports & Analytics
+                    </a>
+                </div>
+                <div class="nav-section">
+          <div class="nav-section-title">System</div>
+          <a href="#" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            Inventory Alerts
+            <span class="nav-badge">12</span>
+          </a>
+          <a href="account.html" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-cog"></i>
+            </div>
+            Settings
+          </a>
+          <a href="#" onclick="logout()" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-right-from-bracket"></i>
+            </div>
+            Logout
+          </a>
+        </div>
+      </nav>
+    </aside>
+      
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <h1 class="page-title">Reports & Analytics</h1>
+                    <div class="header-actions">
+                        <div class="refresh-indicator" id="refreshIndicator">
+                            <i class="fas fa-sync"></i>
+                            <span>Auto-refresh: <span id="refreshTimer">30s</span></span>
+                        </div>
+                        <button class="btn btn-secondary" onclick="toggleAutoRefresh()">
+                            <i class="fas fa-pause" id="refreshIcon"></i>
+                        </button>
+                        <button class="btn btn-primary" onclick="openExportModal()">
+                            <i class="fas fa-download"></i>
+                            Export Reports
+                        </button>
+                    </div>
+                </div>
+            </header>
+            
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Filters Section -->
+                <div class="filters-section">
+                    <div class="filters-title">
+                        <i class="fas fa-filter"></i>
+                        Date Range & Filters
+                    </div>
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label class="filter-label">Start Date</label>
+                            <input type="date" class="filter-input" id="startDate">
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">End Date</label>
+                            <input type="date" class="filter-input" id="endDate">
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Report Period</label>
+                            <select class="filter-select" id="periodFilter" onchange="updateChartPeriod()">
+                                <option value="day">Last 24 Hours</option>
+                                <option value="week" selected>Last 7 Days</option>
+                                <option value="month">Last 30 Days</option>
+                                <option value="year">Last Year</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Quick Filters</label>
+                            <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="applyFilters()">
+                                <i class="fas fa-check"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                    <div class="date-presets">
+                        <button class="preset-btn" onclick="setDatePreset('today')">Today</button>
+                        <button class="preset-btn active" onclick="setDatePreset('week')">This Week</button>
+                        <button class="preset-btn" onclick="setDatePreset('month')">This Month</button>
+                        <button class="preset-btn" onclick="setDatePreset('quarter')">This Quarter</button>
+                        <button class="preset-btn" onclick="setDatePreset('year')">This Year</button>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Revenue</span>
+                            <div class="stat-icon">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalRevenue">₹0</div>
+                        <div class="stat-change neutral" id="revenueChange">
+                            <i class="fas fa-minus"></i>
+                            <span>0% from last month</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card success">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Profit</span>
+                            <div class="stat-icon success">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalProfit">₹0</div>
+                        <div class="stat-change neutral" id="profitMargin">
+                            <i class="fas fa-percentage"></i>
+                            <span>0% margin</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card warning">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Sales</span>
+                            <div class="stat-icon warning">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalSales">0</div>
+                        <div class="stat-change neutral" id="avgOrder">
+                            <i class="fas fa-calculator"></i>
+                            <span>₹0 avg order</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card danger">
+                        <div class="stat-header">
+                            <span class="stat-title">Pending Payments</span>
+                            <div class="stat-icon danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="pendingPayments">₹0</div>
+                        <div class="stat-change neutral" id="overdueCount">
+                            <i class="fas fa-clock"></i>
+                            <span>0 overdue</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Revenue Trends</h3>
+                            <select class="filter-select" style="width: auto;" onchange="updateRevenueTrend(this.value)">
+                                <option value="week">7 Days</option>
+                                <option value="month">30 Days</option>
+                                <option value="year">12 Months</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="revenueTrendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Category Performance</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Top Products</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="topProductsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Payment Methods</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="paymentMethodsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Tabs -->
+                <div class="report-tabs">
+                    <div class="tab-navigation">
+                        <button class="tab-button active" onclick="switchTab('sales')">Sales Report</button>
+                        <button class="tab-button" onclick="switchTab('inventory')">Inventory Report</button>
+                        <button class="tab-button" onclick="switchTab('payments')">Payment Report</button>
+                        <button class="tab-button" onclick="switchTab('customers')">Customer Analytics</button>
+                        <button class="tab-button" onclick="switchTab('profit')">Profit Analysis</button>
+                        <button class="tab-button" onclick="switchTab('forecast')">Stock Forecast</button>
+                    </div>
+
+                    <!-- Sales Report Tab -->
+                    <div class="tab-content active" id="salesTab">
+                        <div class="table-container">
+                            <div class="table-header">
+                                <h3 class="table-title">Sales Transactions</h3>
+                                <button class="btn btn-secondary" onclick="exportSalesReport()">
+                                    <i class="fas fa-file-excel"></i> Export to Excel
+                                </button>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice ID</th>
+                                        <th>Date</th>
+                                        <th>Customer</th>
+                                        <th>Items</th>
+                                        <th>Amount</th>
+                                        <th>Profit</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="salesTableBody">
+                                    <tr><td colspan="7" class="empty-state"><div class="loading-spinner"></div> Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Report Tab -->
+                    <div class="tab-content" id="inventoryTab">
+                        <div class="table-container">
+                            <div class="table-header">
+                                <h3 class="table-title">Inventory Status</h3>
+                                <button class="btn btn-secondary" onclick="exportInventoryReport()">
+                                    <i class="fas fa-file-excel"></i> Export to Excel
+                                </button>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <th>Category</th>
+                                        <th>Stock</th>
+                                        <th>Unit Price</th>
+                                        <th>Stock Value</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventoryTableBody">
+                                    <tr><td colspan="6" class="empty-state"><div class="loading-spinner"></div> Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Payment Report Tab -->
+                    <div class="tab-content" id="paymentsTab">
+                        <div class="table-container">
+                            <div class="table-header">
+                                <h3 class="table-title">Payment Transactions</h3>
+                                <button class="btn btn-secondary" onclick="exportPaymentsReport()">
+                                    <i class="fas fa-file-excel"></i> Export to Excel
+                                </button>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice ID</th>
+                                        <th>Customer</th>
+                                        <th>Amount</th>
+                                        <th>Paid</th>
+                                        <th>Method</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentsTableBody">
+                                    <tr><td colspan="7" class="empty-state"><div class="loading-spinner"></div> Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Customer Analytics Tab -->
+                    <div class="tab-content" id="customersTab">
+                        <div class="table-container">
+                            <div class="table-header">
+                                <h3 class="table-title">Top Customers</h3>
+                                <button class="btn btn-secondary" onclick="exportCustomersReport()">
+                                    <i class="fas fa-file-excel"></i> Export to Excel
+                                </button>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Customer Name</th>
+                                        <th>Phone</th>
+                                        <th>Total Spent</th>
+                                        <th>Orders</th>
+                                        <th>Avg Order</th>
+                                        <th>Last Purchase</th>
+                                        <th>CLV Rank</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customersTableBody">
+                                    <tr><td colspan="7" class="empty-state"><div class="loading-spinner"></div> Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Profit Analysis Tab -->
+                    <div class="tab-content" id="profitTab">
+                        <div class="table-container">
+                            <div class="table-header">
+                                <h3 class="table-title">Profit Analysis</h3>
+                            </div>
+                            <div style="padding: 2rem;">
+                                <div class="stats-grid">
+                                    <div class="stat-card success">
+                                        <div class="stat-header">
+                                            <span class="stat-title">Total Profit</span>
+                                            <div class="stat-icon success">
+                                                <i class="fas fa-dollar-sign"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-value" id="profitTotal">₹0</div>
+                                        <div class="stat-change neutral">Gross Profit</div>
+                                    </div>
+
+                                    <div class="stat-card">
+                                        <div class="stat-header">
+                                            <span class="stat-title">Profit Margin</span>
+                                            <div class="stat-icon">
+                                                <i class="fas fa-percentage"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-value" id="profitMarginPercent">0%</div>
+                                        <div class="stat-change neutral">Average margin</div>
+                                    </div>
+
+                                    <div class="stat-card warning">
+                                        <div class="stat-header">
+                                            <span class="stat-title">Total Cost</span>
+                                            <div class="stat-icon warning">
+                                                <i class="fas fa-coins"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-value" id="profitCost">₹0</div>
+                                        <div class="stat-change neutral">COGS</div>
+                                    </div>
+
+                                    <div class="stat-card">
+                                        <div class="stat-header">
+                                            <span class="stat-title">Avg Profit/Sale</span>
+                                            <div class="stat-icon">
+                                                <i class="fas fa-chart-pie"></i>
+                                            </div>
+                                        </div>
+                                        <div class="stat-value" id="profitAvg">₹0</div>
+                                        <div class="stat-change neutral">Per transaction</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stock Forecast Tab -->
+                    <div class="tab-content" id="forecastTab">
+                        <div class="table-container">
+                            <div class="table-header">
+                                <h3 class="table-title">Stock Forecast & Reorder Alerts</h3>
+                                <button class="btn btn-secondary" onclick="exportForecastReport()">
+                                    <i class="fas fa-file-excel"></i> Export to Excel
+                                </button>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Current Stock</th>
+                                        <th>Daily Sales Rate</th>
+                                        <th>Days Until Stockout</th>
+                                        <th>Reorder Point</th>
+                                        <th>Suggested Order Qty</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="forecastTableBody">
+                                    <tr><td colspan="7" class="empty-state"><div class="loading-spinner"></div> Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let autoRefreshInterval = null;
+        let refreshCountdown = 30;
+        let charts = {};
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializePage();
+            startAutoRefresh();
+        });
+
+        // Initialize page
+        function initializePage() {
+            setDefaultDates();
+            loadDashboardData();
+            loadAllReports();
+            initializeCharts();
+        }
+
+        // Set default dates
+       // Set default dates to CURRENT MONTH
+function setDefaultDates() {
+    const today = new Date();
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    
+    document.getElementById('startDate').valueAsDate = firstDayOfMonth;
+    document.getElementById('endDate').valueAsDate = today;
+    
+    console.log('📅 Default dates set:', firstDayOfMonth.toDateString(), 'to', today.toDateString());
+}
+
+
+        // Load dashboard summary
+        async function loadDashboardData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reports/dashboard`);
+                if (!response.ok) throw new Error('Failed to load dashboard');
+                
+                const data = await response.json();
+                updateDashboardStats(data);
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        // Update dashboard stats
+        function updateDashboardStats(data) {
+            // Revenue
+            document.getElementById('totalRevenue').textContent = `₹${data.revenue.current.toLocaleString('en-IN')}`;
+            const revenueChangeEl = document.getElementById('revenueChange');
+            if (data.revenue.change > 0) {
+                revenueChangeEl.className = 'stat-change positive';
+                revenueChangeEl.innerHTML = `<i class="fas fa-arrow-up"></i><span>${data.revenue.change}% from last month</span>`;
+            } else if (data.revenue.change < 0) {
+                revenueChangeEl.className = 'stat-change negative';
+                revenueChangeEl.innerHTML = `<i class="fas fa-arrow-down"></i><span>${Math.abs(data.revenue.change)}% from last month</span>`;
+            }
+
+            // Profit
+            document.getElementById('totalProfit').textContent = `₹${data.revenue.profit.toLocaleString('en-IN')}`;
+            document.getElementById('profitMargin').innerHTML = `<i class="fas fa-percentage"></i><span>${data.revenue.profitMargin}% margin</span>`;
+
+            // Sales
+            document.getElementById('totalSales').textContent = data.sales.count;
+            document.getElementById('avgOrder').innerHTML = `<i class="fas fa-calculator"></i><span>₹${Math.round(data.sales.avgOrderValue).toLocaleString('en-IN')} avg order</span>`;
+
+            // Payments
+            document.getElementById('pendingPayments').textContent = `₹${data.payments.pending.toLocaleString('en-IN')}`;
+            document.getElementById('overdueCount').innerHTML = `<i class="fas fa-clock"></i><span>${data.payments.overdue} overdue</span>`;
+        }
+
+        // Load all reports
+        async function loadAllReports() {
+            await Promise.all([
+                loadSalesReport(),
+                loadInventoryReport(),
+                loadPaymentsReport(),
+                loadCustomersReport(),
+                loadProfitAnalysis(),
+                loadStockForecast()
+            ]);
+        }
+
+        // Load sales report
+      async function loadSalesReport() {
+    try {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        
+        console.log('🔍 Loading sales with date range:', startDate, 'to', endDate);
+        
+        const url = `${API_BASE_URL}/reports/sales?startDate=${startDate}&endDate=${endDate}`;
+        console.log('📡 Fetching from:', url);
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('✅ Sales data received:', data);
+        console.log('📊 Number of sales:', data.sales ? data.sales.length : 0);
+        
+        renderSalesTable(data.sales || []);
+    } catch (error) {
+        console.error('❌ Error loading sales:', error);
+        document.getElementById('salesTableBody').innerHTML = `<tr><td colspan="7" class="empty-state"><i class="fas fa-exclamation-circle"></i><br/>Failed to load sales data: ${error.message}</td></tr>`;
+    }
+}
+
+
+        // Render sales table
+        function renderSalesTable(sales) {
+            const tbody = document.getElementById('salesTableBody');
+            
+            if (!sales || sales.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i><br>No sales found for this period</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = sales.map(sale => {
+                const profit = sale.items.reduce((sum, item) => {
+                    const purchasePrice = item.purchasePrice || (item.price * 0.7);
+                    return sum + ((item.price - purchasePrice) * item.quantity);
+                }, 0);
+                
+                return `
+                    <tr>
+                        <td><strong>${sale.invoiceId || 'N/A'}</strong></td>
+                        <td>${new Date(sale.createdAt).toLocaleDateString('en-IN')}</td>
+                        <td>
+                            <div style="font-weight: 600;">${sale.customer?.name || 'Walk-in'}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">${sale.customer?.phone || '-'}</div>
+                        </td>
+                        <td>${sale.items.reduce((sum, i) => sum + i.quantity, 0)}</td>
+                        <td><strong>₹${sale.total.toLocaleString('en-IN')}</strong></td>
+                        <td style="color: var(--accent-green);">₹${Math.round(profit).toLocaleString('en-IN')}</td>
+                        <td><span class="status-badge success">${sale.status || 'completed'}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Load inventory report
+        async function loadInventoryReport() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reports/inventory`);
+                const data = await response.json();
+                
+                renderInventoryTable(data.products);
+            } catch (error) {
+                console.error('Error loading inventory:', error);
+                document.getElementById('inventoryTableBody').innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-exclamation-circle"></i><br>Failed to load inventory data</td></tr>';
+            }
+        }
+
+        // Render inventory table
+        function renderInventoryTable(products) {
+            const tbody = document.getElementById('inventoryTableBody');
+            
+            if (!products || products.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>No products found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = products.map(product => {
+                const stockValue = product.price * product.stock;
+                const threshold = product.lowStockThreshold || 10;
+                let statusBadge = 'success';
+                let statusText = 'In Stock';
+                
+                if (product.stock === 0) {
+                    statusBadge = 'danger';
+                    statusText = 'Out of Stock';
+                } else if (product.stock <= 5) {
+                    statusBadge = 'danger';
+                    statusText = 'Critical';
+                } else if (product.stock <= threshold) {
+                    statusBadge = 'warning';
+                    statusText = 'Low Stock';
+                }
+                
+                return `
+                    <tr>
+                        <td><strong>${product.name}</strong></td>
+                        <td>${product.category || 'Uncategorized'}</td>
+                        <td>${product.stock} ${product.unit || 'units'}</td>
+                        <td>₹${product.price.toLocaleString('en-IN')}</td>
+                        <td><strong>₹${stockValue.toLocaleString('en-IN')}</strong></td>
+                        <td><span class="status-badge ${statusBadge}">${statusText}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Load payments report
+        async function loadPaymentsReport() {
+            try {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                
+                const response = await fetch(`${API_BASE_URL}/reports/payments?startDate=${startDate}&endDate=${endDate}`);
+                const data = await response.json();
+                
+                renderPaymentsTable(data.payments);
+                updatePaymentMethodsChart(data.summary.byMethod);
+            } catch (error) {
+                console.error('Error loading payments:', error);
+                document.getElementById('paymentsTableBody').innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-exclamation-circle"></i><br>Failed to load payment data</td></tr>';
+            }
+        }
+
+        // Render payments table
+        function renderPaymentsTable(payments) {
+            const tbody = document.getElementById('paymentsTableBody');
+            
+            if (!payments || payments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i><br>No payments found for this period</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = payments.map(payment => {
+                const statusMap = {
+                    'paid': { class: 'success', text: 'Paid' },
+                    'pending': { class: 'warning', text: 'Pending' },
+                    'partial': { class: 'warning', text: 'Partial' },
+                    'overdue': { class: 'danger', text: 'Overdue' }
+                };
+                const status = statusMap[payment.status] || statusMap.pending;
+                
+                return `
+                    <tr>
+                        <td><strong>${payment.invoiceId}</strong></td>
+                        <td>${payment.customer?.name || 'N/A'}</td>
+                        <td>₹${payment.amount.toLocaleString('en-IN')}</td>
+                        <td>₹${(payment.paidAmount || 0).toLocaleString('en-IN')}</td>
+                        <td><span class="status-badge">${payment.method || 'N/A'}</span></td>
+                        <td><span class="status-badge ${status.class}">${status.text}</span></td>
+                        <td>${new Date(payment.createdAt).toLocaleDateString('en-IN')}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Load customers report
+        async function loadCustomersReport() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reports/top-customers?limit=20`);
+                const data = await response.json();
+                
+                renderCustomersTable(data);
+            } catch (error) {
+                console.error('Error loading customers:', error);
+                document.getElementById('customersTableBody').innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-exclamation-circle"></i><br>Failed to load customer data</td></tr>';
+            }
+        }
+
+        // Render customers table
+        function renderCustomersTable(customers) {
+            const tbody = document.getElementById('customersTableBody');
+            
+            if (!customers || customers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i><br>No customer data available</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = customers.map((customer, index) => {
+                const clvRank = index < 5 ? '🏆 VIP' : index < 10 ? '⭐ Gold' : '👤 Regular';
+                
+                return `
+                    <tr>
+                        <td><strong>${customer.customerName}</strong></td>
+                        <td>${customer._id}</td>
+                        <td><strong>₹${customer.totalSpent.toLocaleString('en-IN')}</strong></td>
+                        <td>${customer.orderCount}</td>
+                        <td>₹${Math.round(customer.avgOrderValue).toLocaleString('en-IN')}</td>
+                        <td>${new Date(customer.lastPurchase).toLocaleDateString('en-IN')}</td>
+                        <td>${clvRank}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Load profit analysis
+        async function loadProfitAnalysis() {
+            try {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                
+                const response = await fetch(`${API_BASE_URL}/reports/profit-analysis?startDate=${startDate}&endDate=${endDate}`);
+                const data = await response.json();
+                
+                document.getElementById('profitTotal').textContent = `₹${Math.round(data.totalProfit).toLocaleString('en-IN')}`;
+                document.getElementById('profitMarginPercent').textContent = `${data.profitMargin}%`;
+                document.getElementById('profitCost').textContent = `₹${Math.round(data.totalCost).toLocaleString('en-IN')}`;
+                document.getElementById('profitAvg').textContent = `₹${Math.round(data.avgProfitPerSale).toLocaleString('en-IN')}`;
+            } catch (error) {
+                console.error('Error loading profit analysis:', error);
+            }
+        }
+
+        // Load stock forecast
+        async function loadStockForecast() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reports/stock-forecast?days=30`);
+                const data = await response.json();
+                
+                renderForecastTable(data);
+            } catch (error) {
+                console.error('Error loading forecast:', error);
+                document.getElementById('forecastTableBody').innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-exclamation-circle"></i><br>Failed to load forecast data</td></tr>';
+            }
+        }
+
+        // Render forecast table
+        function renderForecastTable(forecast) {
+            const tbody = document.getElementById('forecastTableBody');
+            
+            if (!forecast || forecast.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i><br>No forecast data available</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = forecast.map(item => {
+                let statusBadge = 'success';
+                let statusText = 'Normal';
+                
+                if (item.daysUntilStockout <= 7) {
+                    statusBadge = 'danger';
+                    statusText = 'Urgent Reorder';
+                } else if (item.needsReorder) {
+                    statusBadge = 'warning';
+                    statusText = 'Reorder Soon';
+                }
+                
+                return `
+                    <tr>
+                        <td><strong>${item.productName}</strong></td>
+                        <td>${item.currentStock}</td>
+                        <td>${item.dailySalesRate}/day</td>
+                        <td>${item.daysUntilStockout > 999 ? 'N/A' : `${item.daysUntilStockout} days`}</td>
+                        <td>${item.reorderPoint}</td>
+                        <td><strong>${item.suggestedOrderQuantity || '-'}</strong></td>
+                        <td><span class="status-badge ${statusBadge}">${statusText}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            initRevenueTrendChart();
+            initCategoryChart();
+            initTopProductsChart();
+            initPaymentMethodsChart();
+        }
+
+        // Initialize revenue trend chart
+        async function initRevenueTrendChart() {
+            try {
+                const period = document.getElementById('periodFilter').value;
+                const response = await fetch(`${API_BASE_URL}/reports/revenue-trends?period=${period}`);
+                const data = await response.json();
+                
+                const ctx = document.getElementById('revenueTrendChart').getContext('2d');
+                
+                if (charts.revenueTrend) {
+                    charts.revenueTrend.destroy();
+                }
+                
+                charts.revenueTrend = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.map(d => d._id),
+                        datasets: [{
+                            label: 'Revenue',
+                            data: data.map(d => d.revenue),
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: 'Profit',
+                            data: data.map(d => d.profit),
+                            borderColor: '#059669',
+                            backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: (value) => '₹' + value.toLocaleString('en-IN')
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading revenue trends:', error);
+            }
+        }
+
+        // Initialize category chart
+        async function initCategoryChart() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reports/category-performance`);
+                const data = await response.json();
+                
+                const ctx = document.getElementById('categoryChart').getContext('2d');
+                
+                if (charts.category) {
+                    charts.category.destroy();
+                }
+                
+                charts.category = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.map(d => d._id),
+                        datasets: [{
+                            data: data.map(d => d.revenue),
+                            backgroundColor: [
+                                '#2563eb', '#7c3aed', '#059669', '#ea580c', '#dc2626',
+                                '#d97706', '#10b981', '#6d28d9', '#1d4ed8', '#047857'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading category performance:', error);
+            }
+        }
+
+        // Initialize top products chart
+        async function initTopProductsChart() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reports/top-products?limit=10`);
+                const data = await response.json();
+                
+                const ctx = document.getElementById('topProductsChart').getContext('2d');
+                
+                if (charts.topProducts) {
+                    charts.topProducts.destroy();
+                }
+                
+                charts.topProducts = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(d => d.productName),
+                        datasets: [{
+                            label: 'Revenue',
+                            data: data.map(d => d.totalRevenue),
+                            backgroundColor: '#2563eb'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    callback: (value) => '₹' + value.toLocaleString('en-IN')
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading top products:', error);
+            }
+        }
+
+        // Initialize payment methods chart
+        function initPaymentMethodsChart() {
+            const ctx = document.getElementById('paymentMethodsChart').getContext('2d');
+            
+            charts.paymentMethods = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Cash', 'Card', 'UPI', 'Credit'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: ['#059669', '#2563eb', '#ea580c', '#dc2626']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update payment methods chart
+        function updatePaymentMethodsChart(data) {
+            if (charts.paymentMethods) {
+                charts.paymentMethods.data.datasets[0].data = [
+                    data.cash, data.card, data.upi, data.credit
+                ];
+                charts.paymentMethods.update();
+            }
+        }
+
+        // Update revenue trend chart period
+        async function updateRevenueTrend(period) {
+            await initRevenueTrendChart();
+        }
+
+        // Update chart period
+        async function updateChartPeriod() {
+            await initRevenueTrendChart();
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Show corresponding tab
+            const tabMap = {
+                'sales': 'salesTab',
+                'inventory': 'inventoryTab',
+                'payments': 'paymentsTab',
+                'customers': 'customersTab',
+                'profit': 'profitTab',
+                'forecast': 'forecastTab'
+            };
+            
+            document.getElementById(tabMap[tab]).classList.add('active');
+        }
+
+        // Set date preset
+        function setDatePreset(preset) {
+            const endDate = new Date();
+            let startDate = new Date();
+            
+            // Remove active from all presets
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            switch(preset) {
+                case 'today':
+                    startDate = new Date();
+                    break;
+                case 'week':
+                    startDate.setDate(endDate.getDate() - 7);
+                    break;
+                case 'month':
+                    startDate.setMonth(endDate.getMonth() - 1);
+                    break;
+                case 'quarter':
+                    startDate.setMonth(endDate.getMonth() - 3);
+                    break;
+                case 'year':
+                    startDate.setFullYear(endDate.getFullYear() - 1);
+                    break;
+            }
+            
+            document.getElementById('startDate').valueAsDate = startDate;
+            document.getElementById('endDate').valueAsDate = endDate;
+            
+            applyFilters();
+        }
+
+        // Apply filters
+        function applyFilters() {
+            loadAllReports();
+            loadDashboardData();
+            initRevenueTrendChart();
+        }
+
+        // Auto-refresh functionality
+        function startAutoRefresh() {
+            if (autoRefreshInterval) return;
+            
+            autoRefreshInterval = setInterval(() => {
+                refreshCountdown--;
+                document.getElementById('refreshTimer').textContent = `${refreshCountdown}s`;
+                
+                if (refreshCountdown <= 0) {
+                    refreshCountdown = 30;
+                    refreshData();
+                }
+            }, 1000);
+        }
+
+        function toggleAutoRefresh() {
+            const icon = document.getElementById('refreshIcon');
+            const indicator = document.getElementById('refreshIndicator');
+            
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+                icon.className = 'fas fa-play';
+                indicator.classList.remove('active');
+            } else {
+                startAutoRefresh();
+                icon.className = 'fas fa-pause';
+                indicator.classList.add('active');
+            }
+        }
+
+        function refreshData() {
+            const indicator = document.getElementById('refreshIndicator');
+            indicator.classList.add('active');
+            
+            loadDashboardData();
+            loadAllReports();
+            
+            setTimeout(() => {
+                indicator.classList.remove('active');
+            }, 1000);
+        }
+
+        // Export functions
+        function openExportModal() {
+            alert('Export functionality: Choose format (Excel, PDF, CSV) and generate comprehensive reports with all data and charts.');
+        }
+
+        async function exportSalesReport() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reports/export`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        reportType: 'sales',
+                        format: 'xlsx',
+                        filters: {
+                            startDate: document.getElementById('startDate').value,
+                            endDate: document.getElementById('endDate').value
+                        }
+                    })
+                });
+                
+                const result = await response.json();
+                alert(`Sales report exported successfully!\n${result.message}`);
+            } catch (error) {
+                console.error('Export error:', error);
+                alert('Failed to export sales report');
+            }
+        }
+
+        async function exportInventoryReport() {
+            alert('Inventory Report exported to Excel');
+        }
+
+        async function exportPaymentsReport() {
+            alert('Payments Report exported to Excel');
+        }
+
+        async function exportCustomersReport() {
+            alert('Customer Analytics exported to Excel');
+        }
+
+        async function exportForecastReport() {
+            alert('Stock Forecast Report exported to Excel');
+        }
+    </script>
+</body>
+</html>

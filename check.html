@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroceryPro - Management System</title>
+    
+    <!-- Bootstrap CSS for quick styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+   
+   <!-- Update these links in your existing index.html -->
+<div class="navbar-nav ms-auto">
+    <a class="nav-link" href="dashboard.html">
+        <i class="fas fa-chart-bar"></i> Dashboard
+    </a>
+    <a class="nav-link" href="products.html">
+        <i class="fas fa-boxes"></i> Products
+    </a>
+    <a class="nav-link" href="sales-terminal.html">
+        <i class="fas fa-cash-register"></i> Sales Terminal
+    </a>
+</div>
+
+
+    <!-- Main Content -->
+    <main class="container my-5">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h1 class="display-4 text-success">Welcome to GroceryPro</h1>
+                <p class="lead">Your complete grocery management solution</p>
+            </div>
+        </div>
+
+        <!-- Quick Stats Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-boxes fa-3x mb-3"></i>
+                        <h5>Products</h5>
+                        <h2 id="totalProducts">-</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-dollar-sign fa-3x mb-3"></i>
+                        <h5>Today's Sales</h5>
+                        <h2 id="todaySales">$-</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                        <h5>Low Stock</h5>
+                        <h2 id="lowStock">-</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-receipt fa-3x mb-3"></i>
+                        <h5>Transactions</h5>
+                        <h2 id="todayTransactions">-</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                        <h5>View Dashboard</h5>
+                        <p>See detailed analytics and reports</p>
+                        <a href="dashboard.html" class="btn btn-primary">Open Dashboard</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-plus-circle fa-3x text-success mb-3"></i>
+                        <h5>Manage Products</h5>
+                        <p>Add, edit, or remove products</p>
+                        <a href="products.html" class="btn btn-success">Manage Products</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-shopping-basket fa-3x text-info mb-3"></i>
+                        <h5>Start Selling</h5>
+                        <p>Process customer transactions</p>
+                        <a href="sales-terminal.html" class="btn btn-info">Sales Terminal</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
