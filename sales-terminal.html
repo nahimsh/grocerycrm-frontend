@@ -1746,26 +1746,32 @@ function applySettings() {
       showToast(`✅ ${product.name} added to cart!`, 'success');
     }
     // Calculate outstanding when paid amount changes
-document.addEventListener('DOMContentLoaded', function() {
-    const paidAmountInput = document.getElementById('paidAmount');
-    const outstandingDisplay = document.getElementById('outstandingDisplay');
-    const totalAmountEl = document.getElementById('totalAmount');
-    
-    if (paidAmountInput) {
-        paidAmountInput.addEventListener('input', function() {
-            const total = parseFloat(totalAmountEl.textContent.replace('₹', '').replace(/,/g, '')) || 0;
-            const paid = parseFloat(this.value) || 0;
-            const outstanding = Math.max(0, total - paid);
-            
-            if (paid > 0 && paid < total) {
-                outstandingDisplay.style.display = 'block';
-                outstandingDisplay.textContent = `Outstanding: ₹${outstanding.toLocaleString('en-IN')}`;
-            } else {
-                outstandingDisplay.style.display = 'none';
-            }
-        });
-    }
-});
+// Auto-calculate outstanding amount WITH GST
+const paidAmountInput = document.getElementById('paidAmount');
+const outstandingDisplay = document.getElementById('outstandingDisplay');
+
+if (paidAmountInput) {
+    paidAmountInput.addEventListener('input', function() {
+        // Get the FINAL total (with GST and discount)
+        const totalEl = document.getElementById('totalAmount');
+        if (!totalEl) return;
+        
+        const total = parseFloat(totalEl.textContent.replace('₹', '').replace(/,/g, '')) || 0;
+        const paid = parseFloat(this.value) || 0;
+        const outstanding = Math.max(0, total - paid);
+        
+        if (paid > 0 && paid < total) {
+            outstandingDisplay.style.display = 'block';
+            outstandingDisplay.textContent = `Outstanding: ₹${outstanding.toLocaleString('en-IN')}`;
+        } else if (paid >= total) {
+            outstandingDisplay.style.display = 'block';
+            outstandingDisplay.textContent = `Fully Paid ✓`;
+            outstandingDisplay.style.color = 'var(--accent-green)';
+        } else {
+            outstandingDisplay.style.display = 'none';
+        }
+    });
+}
 
     function updateCartDisplay() {
     if (cart.length === 0) {
@@ -2002,7 +2008,6 @@ async function completeSale() {
     outstanding: Math.max(0, parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, '')) - (parseFloat(document.getElementById('paidAmount')?.value) || parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, '')))),
     paymentStatus: (parseFloat(document.getElementById('paidAmount')?.value) || parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, ''))) >= parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, '')) ? 'paid' : 'partial'
 };
-
 
     console.log('📤 FINAL sale data being sent:', JSON.stringify(saleData, null, 2));
 
