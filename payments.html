@@ -728,8 +728,8 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-header">
-                            <span class="stat-title">Total Receivables</span>
-                            <div class="stat-icon">
+                        <span class="stat-title">Total Outstanding</span>
+                                <div class="stat-icon">
                                 <i class="fas fa-rupee-sign"></i>
                             </div>
                         </div>
@@ -782,17 +782,20 @@
 
                     <div class="tab-content active" id="allPaymentsTab">
                         <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Invoice ID</th>
-                                    <th>Customer</th>
-                                    <th>Amount</th>
-                                    <th>Method</th>
-                                    <th>Status</th>
-                                    <th>Due Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
+                           <thead>
+                         <tr>
+                            <th>Invoice ID</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Paid</th>
+                            <th>Outstanding</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                            <th>Due Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
                             <tbody id="allPaymentsBody">
                                 <tr><td colspan="7" style="text-align: center; padding: 2rem;">Loading payments...</td></tr>
                             </tbody>
@@ -929,66 +932,76 @@
         }
 
         // Update statistics
-        function updateStats() {
-            const totalReceivables = allPayments
-                .filter(p => p.status !== 'paid')
-                .reduce((sum, p) => sum + (p.amount - (p.paidAmount || 0)), 0);
-            
-            const thisMonth = new Date().getMonth();
-            const paidThisMonth = allPayments
-                .filter(p => p.status === 'paid' && new Date(p.paidDate).getMonth() === thisMonth)
-                .reduce((sum, p) => sum + p.amount, 0);
-            
-            const pendingCount = allPayments.filter(p => p.status === 'pending').length;
-            const overdueCount = allPayments.filter(p => p.status === 'overdue').length;
+       function updateStats() {
+    // Calculate total outstanding (not total receivables)
+    const totalOutstanding = allPayments
+        .filter(p => p.status !== 'paid')
+        .reduce((sum, p) => sum + (p.amount - (p.paidAmount || 0)), 0);
+    
+    const thisMonth = new Date().getMonth();
+    const paidThisMonth = allPayments
+        .filter(p => p.status === 'paid' && new Date(p.paidDate).getMonth() === thisMonth)
+        .reduce((sum, p) => sum + p.amount, 0);
+    
+    const pendingCount = allPayments.filter(p => p.status === 'pending').length;
+    const overdueCount = allPayments.filter(p => p.status === 'overdue').length;
+    
+    document.getElementById('totalReceivables').textContent = `₹${totalOutstanding.toLocaleString('en-IN')}`;
+    document.getElementById('paidThisMonth').textContent = `₹${paidThisMonth.toLocaleString('en-IN')}`;
+    document.getElementById('pendingCount').textContent = pendingCount;
+    document.getElementById('overdueCount').textContent = overdueCount;
+}
 
-            document.getElementById('totalReceivables').textContent = `₹${totalReceivables.toLocaleString('en-IN')}`;
-            document.getElementById('paidThisMonth').textContent = `₹${paidThisMonth.toLocaleString('en-IN')}`;
-            document.getElementById('pendingCount').textContent = pendingCount;
-            document.getElementById('overdueCount').textContent = overdueCount;
-        }
 
         // Render all payments
         function renderAllPayments() {
-            const tbody = document.getElementById('allPaymentsBody');
-            if (!allPayments.length) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">No payments found</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = allPayments.map(payment => {
-                const methodDisplay = getPaymentMethodDisplay(payment.method);
-                return `
-                    <tr>
-                        <td><strong>${payment.invoiceId}</strong></td>
-                        <td>
-                            <div style="font-weight: 600;">${payment.customer.name}</div>
-                            <div style="font-size: 0.875rem; color: var(--text-muted);">${payment.customer.phone}</div>
-                        </td>
-                        <td>
-                            <div style="font-weight: 700; color: var(--primary-blue);">₹${payment.amount.toLocaleString('en-IN')}</div>
-                            ${payment.status === 'partial' ? `<div style="font-size: 0.875rem; color: var(--text-muted);">Paid: ₹${(payment.paidAmount || 0).toLocaleString('en-IN')}</div>` : ''}
-                        </td>
-                        <td>
-                            <div class="payment-method">
-                                <div class="method-icon ${methodDisplay.class}">
-                                    <i class="fas ${methodDisplay.icon}"></i>
-                                </div>
-                                <span>${methodDisplay.label}</span>
-                            </div>
-                        </td>
-                        <td><span class="status-badge ${getStatusClass(payment.status)}">${payment.status}</span></td>
-                        <td>${formatDate(payment.dueDate)}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn btn-view" onclick="viewPayment('${payment._id}')">View</button>
-                                ${payment.status !== 'paid' ? `<button class="action-btn btn-edit" onclick="recordPayment('${payment._id}')">Pay</button>` : ''}
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
+    const tbody = document.getElementById('allPaymentsBody');
+    if (!allPayments.length) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted)">No payments found</td></tr>`;
+        return;
+    }
+    
+    tbody.innerHTML = allPayments.map(payment => {
+        const methodDisplay = getPaymentMethodDisplay(payment.method);
+        const paidAmount = payment.paidAmount || 0;
+        const outstanding = payment.amount - paidAmount;
+        
+        return `
+            <tr>
+                <td><strong>${payment.invoiceId}</strong></td>
+                <td>
+                    <div style="font-weight: 600">${payment.customer.name}</div>
+                    <div style="font-size: 0.875rem; color: var(--text-muted)">${payment.customer.phone}</div>
+                </td>
+                <td>
+                    <div style="font-weight: 700; color: var(--primary-blue)">₹${payment.amount.toLocaleString('en-IN')}</div>
+                </td>
+                <td>
+                    <div style="font-weight: 600; color: var(--accent-green)">₹${paidAmount.toLocaleString('en-IN')}</div>
+                </td>
+                <td>
+                    <div style="font-weight: 700; color: ${outstanding > 0 ? 'var(--accent-red)' : 'var(--accent-green)'}">₹${outstanding.toLocaleString('en-IN')}</div>
+                </td>
+                <td>
+                    <div class="payment-method">
+                        <div class="method-icon ${methodDisplay.class}">
+                            <i class="fas ${methodDisplay.icon}"></i>
+                        </div>
+                        <span>${methodDisplay.label}</span>
+                    </div>
+                </td>
+                <td><span class="status-badge ${getStatusClass(payment.status)}">${payment.status}</span></td>
+                <td>${formatDate(payment.dueDate)}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-view" onclick="viewPayment('${payment.id}')">View</button>
+                        ${payment.status !== 'paid' ? `<button class="action-btn btn-edit" onclick="recordPayment('${payment.id}')">Pay</button>` : ''}
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
 
         // Render pending payments
         function renderPendingPayments() {
