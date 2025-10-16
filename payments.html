@@ -1138,32 +1138,55 @@
         }
 
         // Record payment
-        async function recordPayment(id) {
-            const amount = prompt('Enter payment amount:');
-            if (!amount) return;
-
-            const method = prompt('Payment method (cash/card/upi):');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/payments/${id}/pay`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        amount: parseFloat(amount), 
-                        method: method || 'cash',
-                        transactionId: `TXN-${Date.now()}`
-                    })
-                });
-
-                if (!response.ok) throw new Error('Failed to record payment');
-
-                alert('Payment recorded successfully!');
-                loadPayments();
-            } catch (error) {
-                console.error('Error recording payment:', error);
-                alert('Failed to record payment');
-            }
+       // Record payment
+async function recordPayment(id) {
+    const payment = allPayments.find(p => p.id === id || p._id === id);
+    if (!payment) {
+        alert('Payment not found!');
+        return;
+    }
+    
+    const outstanding = payment.amount - (payment.paidAmount || 0);
+    
+    const amount = prompt(`Enter payment amount (Outstanding: ₹${outstanding.toLocaleString('en-IN')})`);
+    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+        alert('Invalid amount entered');
+        return;
+    }
+    
+    if (parseFloat(amount) > outstanding) {
+        alert('Payment amount cannot exceed outstanding balance!');
+        return;
+    }
+    
+    const method = prompt('Payment method (cash/card/upi/credit):', 'cash');
+    if (!method) return;
+    
+    try {
+        const paymentId = payment.id || payment._id;
+        const response = await fetch(`${API_BASE_URL}/payments/${paymentId}/pay`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amount: parseFloat(amount),
+                method: method.toLowerCase(),
+                transactionId: `TXN-${Date.now()}`
+            })
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to record payment');
         }
+        
+        alert(`Payment of ₹${amount} recorded successfully!`);
+        await loadPayments();
+    } catch (error) {
+        console.error('Error recording payment:', error);
+        alert(`Failed to record payment: ${error.message}`);
+    }
+}
+
 
         // Helper functions
         function getPaymentMethodDisplay(method) {
