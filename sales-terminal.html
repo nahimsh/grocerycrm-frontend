@@ -1389,6 +1389,15 @@
                   <span>📋 Credit</span>
                 </label>
               </div>
+              <!-- COMPACT PARTIAL PAYMENT INPUT -->
+  <div style="margin: 0.4rem 0; padding: 0.4rem; background: var(--gray-50); border-radius: 4px; border: 1px solid var(--gray-300);">
+    <input type="number" 
+           id="paidAmount" 
+           placeholder="Amount Paid (Leave blank for full)" 
+           style="width: 100%; padding: 0.4rem; border: 1px solid var(--gray-300); border-radius: 4px; font-size: 0.75rem; text-align: center;">
+    <div id="outstandingDisplay" style="font-size: 0.7rem; color: var(--accent-red); text-align: center; margin-top: 0.2rem; font-weight: 600; display: none;">Outstanding: ₹0</div>
+  </div>
+
               
               <div class="sale-actions">
                 <button class="btn btn-primary btn-large" id="completeSale">
@@ -1736,6 +1745,27 @@ function applySettings() {
       calculateTotals();
       showToast(`✅ ${product.name} added to cart!`, 'success');
     }
+    // Calculate outstanding when paid amount changes
+document.addEventListener('DOMContentLoaded', function() {
+    const paidAmountInput = document.getElementById('paidAmount');
+    const outstandingDisplay = document.getElementById('outstandingDisplay');
+    const totalAmountEl = document.getElementById('totalAmount');
+    
+    if (paidAmountInput) {
+        paidAmountInput.addEventListener('input', function() {
+            const total = parseFloat(totalAmountEl.textContent.replace('₹', '').replace(/,/g, '')) || 0;
+            const paid = parseFloat(this.value) || 0;
+            const outstanding = Math.max(0, total - paid);
+            
+            if (paid > 0 && paid < total) {
+                outstandingDisplay.style.display = 'block';
+                outstandingDisplay.textContent = `Outstanding: ₹${outstanding.toLocaleString('en-IN')}`;
+            } else {
+                outstandingDisplay.style.display = 'none';
+            }
+        });
+    }
+});
 
     function updateCartDisplay() {
     if (cart.length === 0) {
@@ -1959,16 +1989,20 @@ async function completeSale() {
     }
     
     // Prepare sale data
-    const saleData = {
-        products: cart.map(item => ({
-            productId: item.id,
-            quantity: item.quantity
-        })),
-        paymentMethod: paymentMethod.toLowerCase(),
-        customerId: customerId,
-        customer: customerData,
-        notes: 'POS Sale from Sales Terminal'
-    };
+   const saleData = {
+    products: cart.map(item => ({
+        productId: item.id,
+        quantity: item.quantity
+    })),
+    paymentMethod: paymentMethod.toLowerCase(),
+    customerId: customerId,
+    customer: customerData,
+    notes: 'POS Sale from Sales Terminal',
+    paidAmount: parseFloat(document.getElementById('paidAmount')?.value) || parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, '')),
+    outstanding: Math.max(0, parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, '')) - (parseFloat(document.getElementById('paidAmount')?.value) || parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, '')))),
+    paymentStatus: (parseFloat(document.getElementById('paidAmount')?.value) || parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, ''))) >= parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, '')) ? 'paid' : 'partial'
+};
+
 
     console.log('📤 FINAL sale data being sent:', JSON.stringify(saleData, null, 2));
 
