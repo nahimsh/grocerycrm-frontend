@@ -1994,8 +1994,27 @@ async function completeSale() {
         console.log('ℹ️ Walk-in Customer selected');
     }
     
-    // Prepare sale data
-   const saleData = {
+// Prepare sale data with proper credit/partial payment handling
+const totalAmount = parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, ''));
+let paidAmount = 0;
+
+// For CREDIT purchases - customer hasn't paid anything yet
+if (paymentMethod.toLowerCase() === 'credit') {
+    paidAmount = 0; // No payment for credit purchases
+} else {
+    // For Cash/Card/UPI - check if payment input has value, otherwise assume full payment
+    const paidInput = document.getElementById('paidAmount');
+    if (paidInput && paidInput.value) {
+        paidAmount = parseFloat(paidInput.value) || totalAmount;
+    } else {
+        paidAmount = totalAmount; // Full payment for non-credit methods
+    }
+}
+
+const outstanding = Math.max(0, totalAmount - paidAmount);
+const paymentStatus = paidAmount >= totalAmount ? 'paid' : (paidAmount > 0 ? 'partial' : 'pending');
+
+const saleData = {
     products: cart.map(item => ({
         productId: item.id,
         quantity: item.quantity
@@ -2004,10 +2023,11 @@ async function completeSale() {
     customerId: customerId,
     customer: customerData,
     notes: 'POS Sale from Sales Terminal',
-    paidAmount: parseFloat(document.getElementById('paidAmount')?.value) || parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, '')),
-    outstanding: Math.max(0, parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, '')) - (parseFloat(document.getElementById('paidAmount')?.value) || parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, '')))),
-    paymentStatus: (parseFloat(document.getElementById('paidAmount')?.value) || parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, ''))) >= parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '').replace(/,/g, '')) ? 'paid' : 'partial'
+    paidAmount: paidAmount,
+    outstanding: outstanding,
+    paymentStatus: paymentStatus
 };
+
 
     console.log('📤 FINAL sale data being sent:', JSON.stringify(saleData, null, 2));
 
