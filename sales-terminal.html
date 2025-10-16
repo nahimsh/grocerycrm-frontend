@@ -1738,33 +1738,33 @@ function applySettings() {
     }
 
     function updateCartDisplay() {
-      if (cart.length === 0) {
-        cartItems.innerHTML = `
-          <div class="cart-empty">
+    if (cart.length === 0) {
+        cartItems.innerHTML = `<div class="cart-empty">
             <i class="fas fa-shopping-cart"></i>
             <h3>Your cart is empty</h3>
             <p>Click products to add them to the cart</p>
-          </div>
-        `;
+        </div>`;
         return;
-      }
-
-      cartItems.innerHTML = '';
-      cart.forEach(item => {
+    }
+    
+    // ✅ FIXED: Clear first, then append items
+    cartItems.innerHTML = '';
+    cart.forEach(item => {
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
         cartItem.innerHTML = `
-          <div class="item-name">${item.name}<br><small style="color: var(--text-muted); font-size: 0.65rem;">SKU: ${item.sku}</small></div>
-          <input type="number" class="qty-input" value="${item.quantity}" min="1" max="${item.maxStock}" 
-                 onchange="updateQuantity(${item.id}, parseInt(this.value))">
-          <div class="item-total">₹${formatCurrency(item.total)}</div>
-          <button class="remove-btn" onclick="removeFromCart(${item.id})">
-            <i class="fas fa-times"></i>
-          </button>
+            <div class="item-name">${item.name}<br><small style="color: var(--text-muted); font-size: 0.65rem;">SKU: ${item.sku}</small></div>
+            <input type="number" class="qty-input" value="${item.quantity}" min="1" max="${item.maxStock}" 
+                   onchange="updateQuantity('${item.id}', parseInt(this.value))">
+            <div class="item-total">${formatCurrency(item.total)}</div>
+            <button class="remove-btn" onclick="removeFromCart('${item.id}')">
+                <i class="fas fa-times"></i>
+            </button>
         `;
         cartItems.appendChild(cartItem);
-      });
-    }
+    });
+}
+
 
     // NO DISCOUNT CALCULATION
     function calculateTotals() {
@@ -1778,35 +1778,42 @@ function applySettings() {
     }
 
     function updateQuantity(productId, newQuantity) {
-      const item = cart.find(i => i.id === productId);A
-      if (!item) return;
-
-      if (newQuantity <= 0) {
+    const item = cart.find(i => i.id === productId);
+    if (!item) return;
+    
+    if (newQuantity <= 0) {
         removeFromCart(productId);
         return;
-      }
-
-      if (newQuantity > item.maxStock) {
-        showToast('Not enough stock available!', 'warning');
+    }
+    
+    if (newQuantity > item.maxStock) {
+        showToast(`Not enough stock available!`, 'warning');
         updateCartDisplay();
         return;
-      }
-
-      item.quantity = newQuantity;
-      item.total = item.quantity * item.price;
-      updateCartDisplay();
-      calculateTotals();
     }
+    
+    // FIX: Update quantity and recalculate total
+    item.quantity = parseInt(newQuantity);
+    item.total = item.quantity * item.price;
+    
+    // FIX: Update display and totals immediately
+    updateCartDisplay();
+    calculateTotals();
+    showToast(`Quantity updated to ${newQuantity}`, 'info');
+}
 
-    function removeFromCart(productId) {
-      const item = cart.find(i => i.id === productId);
-      cart = cart.filter(item => item.id !== productId);
-      updateCartDisplay();
-      calculateTotals();
-      if (item) {
-        showToast(`🗑️ ${item.name} removed from cart`, 'info');
-      }
-    }
+
+ function removeFromCart(productId) {
+    const item = cart.find(i => i.id === productId);
+    if (!item) return;
+    
+    // FIX: Properly filter out the item
+    cart = cart.filter(cartItem => cartItem.id !== productId);
+    
+    updateCartDisplay();
+    calculateTotals();
+    showToast(`${item.name} removed from cart`, 'info');
+}
 
    function filterProducts() {
     const searchTerm = productSearch.value.toLowerCase();
