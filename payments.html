@@ -994,8 +994,8 @@
                 <td>${formatDate(payment.dueDate)}</td>
                 <td>
                     <div class="action-buttons">
-                        <button class="action-btn btn-view" onclick="viewPayment('${payment.id}')">View</button>
-                        ${payment.status !== 'paid' ? `<button class="action-btn btn-edit" onclick="recordPayment('${payment.id}')">Pay</button>` : ''}
+            <button class="action-btn btn-view" onclick="viewPayment('${payment._id || payment.id}')">View</button>
+            ${payment.status !== 'paid' ? `<button class="action-btn btn-edit" onclick="recordPayment('${payment._id || payment.id}')">Pay</button>` : ''}
                     </div>
                 </td>
             </tr>
@@ -1140,9 +1140,19 @@
         // Record payment
        // Record payment
 async function recordPayment(id) {
-    const payment = allPayments.find(p => p.id === id || p._id === id);
+    console.log('Recording payment for ID:', id); // Debug
+    console.log('All payments:', allPayments); // Debug
+    
+    const payment = allPayments.find(p => 
+        p._id === id || 
+        p.id === id || 
+        p._id?.toString() === id || 
+        p.id?.toString() === id
+    );
+    
     if (!payment) {
-        alert('Payment not found!');
+        alert('Payment not found! ID: ' + id);
+        console.error('Payment not found. Looking for ID:', id, 'in', allPayments);
         return;
     }
     
@@ -1163,7 +1173,9 @@ async function recordPayment(id) {
     if (!method) return;
     
     try {
-        const paymentId = payment.id || payment._id;
+        const paymentId = payment._id || payment.id;
+        console.log('Making API call with ID:', paymentId); // Debug
+        
         const response = await fetch(`${API_BASE_URL}/payments/${paymentId}/pay`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1186,6 +1198,7 @@ async function recordPayment(id) {
         alert(`Failed to record payment: ${error.message}`);
     }
 }
+
 
 
         // Helper functions
