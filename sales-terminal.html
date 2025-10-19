@@ -2028,7 +2028,15 @@ const saleData = {
     paymentStatus: paymentStatus
 };
 
-
+  // ADD THESE DEBUG LINES HERE ↓
+console.log('🔍 DEBUG INFO:');
+console.log('Payment Method:', paymentMethod);
+console.log('Paid Amount:', paidAmount);
+console.log('Total Amount:', totalAmount);
+console.log('Outstanding:', outstanding);
+console.log('Payment Status:', paymentStatus);
+console.log('Is Credit?:', paymentMethod.toLowerCase() === 'credit');
+console.log('📦 FINAL sale data:', saleData);
     console.log('📤 FINAL sale data being sent:', JSON.stringify(saleData, null, 2));
 
     try {

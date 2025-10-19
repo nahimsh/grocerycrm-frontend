@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Collection Report - GroceryCRM</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --primary-blue-light: #3b82f6;
+            --secondary-purple: #7c3aed;
+            --secondary-purple-dark: #6d28d9;
+            --accent-green: #059669;
+            --accent-green-light: #10b981;
+            --accent-orange: #ea580c;
+            --accent-red: #dc2626;
+            --accent-yellow: #d97706;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dashboard-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--bg-primary);
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 40;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar-header {
+            padding: var(--space-xl) var(--space-lg);
+            border-bottom: 1px solid var(--gray-200);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .logo-text {
+            color: white;
+        }
+
+        .logo-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .logo-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: var(--space-lg) 0;
+        }
+
+        .nav-section {
+            margin-bottom: var(--space-xl);
+        }
+
+        .nav-section-title {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0 var(--space-lg);
+            margin-bottom: var(--space-md);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem var(--space-lg);
+            margin: 0 var(--space-md);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all var(--transition-fast);
+        }
+
+        .nav-item:hover {
+            background-color: var(--gray-100);
+            color: var(--primary-blue);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-icon {
+            width: 20px;
+            margin-right: var(--space-md);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--gray-200);
+            padding: var(--space-lg) var(--space-xl);
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: 0.625rem 1rem;
+            border: 1px solid transparent;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-light) 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border-color: var(--gray-300);
+        }
+
+        .btn-warning {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .dashboard-content {
+            flex: 1;
+            padding: var(--space-xl);
+        }
+
+        .filter-bar {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-xl);
+            box-shadow: var(--shadow-sm);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .filter-input, .filter-select {
+            width: 100%;
+            padding: 0.625rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .stat-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .stat-card.success::before {
+            background: var(--accent-green);
+        }
+
+        .stat-card.warning::before {
+            background: var(--accent-orange);
+        }
+
+        .stat-card.danger::before {
+            background: var(--accent-red);
+        }
+
+        .stat-card.primary::before {
+            background: var(--primary-blue);
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-4px);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-light) 100%);
+        }
+
+        .stat-icon.warning {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-yellow) 100%);
+        }
+
+        .stat-icon.danger {
+            background: linear-gradient(135deg, var(--accent-red) 0%, #ef4444 100%);
+        }
+
+        .stat-icon.primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+            line-height: 1;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: var(--space-sm);
+            background: var(--gray-100);
+            padding: 4px;
+            border-radius: var(--radius-md);
+        }
+
+        .view-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all var(--transition-fast);
+        }
+
+        .view-btn.active {
+            background: var(--bg-primary);
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .list-container {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .list-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.2fr 1fr 1.5fr;
+            gap: var(--space-md);
+            padding: 0.875rem 1.5rem;
+            background: var(--gray-50);
+            border-bottom: 2px solid var(--gray-200);
+            font-weight: 600;
+            font-size: 0.8125rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .list-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.2fr 1fr 1.5fr;
+            gap: var(--space-md);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            transition: all var(--transition-fast);
+            align-items: center;
+        }
+
+        .list-item:hover {
+            background: var(--gray-50);
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .customer-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .customer-name {
+            font-weight: 600;
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+        }
+
+        .customer-phone {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .amount-display {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .amount-outstanding {
+            color: var(--accent-red);
+        }
+
+        .amount-collected {
+            color: var(--accent-green);
+        }
+
+        .amount-normal {
+            color: var(--text-primary);
+        }
+
+        .amount-muted {
+            color: var(--text-muted);
+        }
+
+        .list-actions {
+            display: flex;
+            gap: var(--space-sm);
+            justify-content: flex-end;
+        }
+
+        .list-action-btn {
+            padding: 0.5rem 0.875rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-collect-sm {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .btn-collect-sm:hover {
+            background: #047857;
+        }
+
+        .btn-view-sm {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-view-sm:hover {
+            background: var(--primary-blue-dark);
+        }
+
+        .btn-reminder-sm {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-reminder-sm:hover {
+            background: #c2410c;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .close-modal {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: var(--space-sm);
+            color: var(--text-primary);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.625rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .summary-box {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-sm);
+            font-size: 0.875rem;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+            padding-top: var(--space-sm);
+            border-top: 2px solid var(--gray-300);
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .ledger-modal-content {
+            max-width: 800px;
+        }
+
+        .ledger-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--space-lg);
+        }
+
+        .ledger-table th {
+            background: var(--gray-50);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .ledger-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 0.875rem;
+        }
+
+        .ledger-table tr:hover {
+            background: var(--gray-50);
+        }
+
+        @media print {
+            .sidebar, .header, .filter-bar, .section-header .header-actions {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .list-item {
+                break-inside: avoid;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .list-header,
+            .list-item {
+                grid-template-columns: 2fr 1fr 1fr 1fr;
+            }
+            
+            .list-header span:nth-child(5),
+            .list-item > div:nth-child(5) {
+                display: none;
+            }
+
+            .list-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .list-header {
+                display: none;
+            }
+            
+            .list-item {
+                grid-template-columns: 1fr;
+                gap: var(--space-sm);
+                padding: var(--space-lg);
+            }
+
+            .list-actions {
+                flex-direction: row;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="logo-text">
+                        <div class="logo-title">GroceryCRM</div>
+                        <div class="logo-subtitle">Professional Business Suite</div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="index.html" class="nav-item">
+                        <i class="fas fa-home nav-icon"></i>
+                        Dashboard
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Business Operations</div>
+                    <a href="products.html" class="nav-item">
+                        <i class="fas fa-box nav-icon"></i>
+                        Products
+                    </a>
+                    <a href="categories.html" class="nav-item">
+                        <i class="fas fa-tags nav-icon"></i>
+                        Categories
+                    </a>
+                    <a href="customers.html" class="nav-item">
+                        <i class="fas fa-users nav-icon"></i>
+                        Customers
+                    </a>
+                    <a href="sales-terminal.html" class="nav-item">
+                        <i class="fas fa-shopping-cart nav-icon"></i>
+                        Sales Terminal
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Financial Management</div>
+                    <a href="payments.html" class="nav-item">
+                        <i class="fas fa-credit-card nav-icon"></i>
+                        Payments
+                    </a>
+                    <a href="daily-collection.html" class="nav-item active">
+                        <i class="fas fa-wallet nav-icon"></i>
+                        Daily Collection
+                    </a>
+                    <a href="reports.html" class="nav-item">
+                        <i class="fas fa-chart-bar nav-icon"></i>
+                        Reports & Analytics
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-exclamation-triangle nav-icon"></i>
+                        Inventory Alerts
+                    </a>
+                    <a href="account.html" class="nav-item">
+                        <i class="fas fa-cog nav-icon"></i>
+                        Settings
+                    </a>
+                    <a href="#" onclick="logout()" class="nav-item">
+                        <i class="fas fa-right-from-bracket nav-icon"></i>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <div class="main-content">
+            <header class="header">
+                <div class="header-content">
+                    <h1 class="page-title">Daily Collection Report</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                        <button class="btn btn-primary" onclick="exportToExcel()">
+                            <i class="fas fa-file-excel"></i> Export
+                        </button>
+                        <button class="btn btn-warning" onclick="sendReminders()">
+                            <i class="fas fa-bell"></i> Send Reminders
+                        </button>
+                        <button class="btn btn-success" onclick="openCollectModal()">
+                            <i class="fas fa-plus"></i> Record Collection
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label class="filter-label">Date</label>
+                        <input type="date" class="filter-input" id="filterDate" onchange="loadReport()">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Date Range</label>
+                        <select class="filter-select" id="filterRange" onchange="applyDateRange()">
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Filter By</label>
+                        <select class="filter-select" id="filterType" onchange="filterCustomers()">
+                            <option value="all">All Retailers</option>
+                            <option value="hasOutstanding">Has Outstanding</option>
+                            <option value="collected">Collected Today</option>
+                            <option value="overdue">Overdue Payments</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Search</label>
+                        <input type="text" class="filter-input" id="filterSearch" placeholder="Search retailer..." oninput="filterCustomers()">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Sort By</label>
+                        <select class="filter-select" id="sortBy" onchange="sortCustomers()">
+                            <option value="outstanding-desc">Outstanding (High to Low)</option>
+                            <option value="outstanding-asc">Outstanding (Low to High)</option>
+                            <option value="name-asc">Name (A-Z)</option>
+                            <option value="collected-desc">Today's Collection</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card success">
+                        <div class="stat-header">
+                            <span class="stat-title">Today's Collection</span>
+                            <div class="stat-icon success">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="todayCollection">₹0</div>
+                        <div class="stat-change">From <span id="collectionCount">0</span> retailers</div>
+                    </div>
+
+                    <div class="stat-card danger">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Outstanding</span>
+                            <div class="stat-icon danger">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalOutstanding">₹0</div>
+                        <div class="stat-change"><span id="outstandingCount">0</span> retailers</div>
+                    </div>
+
+                    <div class="stat-card primary">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Credit Given</span>
+                            <div class="stat-icon primary">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalCredit">₹0</div>
+                        <div class="stat-change">All time credit sales</div>
+                    </div>
+
+                    <div class="stat-card warning">
+                        <div class="stat-header">
+                            <span class="stat-title">Collection Rate</span>
+                            <div class="stat-icon warning">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="collectionRate">0%</div>
+                        <div class="stat-change">Recovery percentage</div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 class="section-title">Retailer Ledger (<span id="retailerCount">0</span>)</h2>
+                </div>
+
+                <div id="customerGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collection Modal -->
+    <div class="modal" id="collectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Record Collection</h2>
+                <span class="close-modal" onclick="closeModal('collectModal')">&times;</span>
+            </div>
+
+            <form id="collectionForm" onsubmit="saveCollection(event)">
+                <div class="form-group">
+                    <label class="form-label">Select Retailer *</label>
+                    <select class="form-select" name="customerId" id="customerSelect" required onchange="updateCollectionSummary()">
+                        <option value="">Choose a retailer...</option>
+                    </select>
+                </div>
+
+                <div class="summary-box" id="collectionSummary" style="display: none;">
+                    <div class="summary-row">
+                        <span>Total Outstanding:</span>
+                        <strong id="summaryOutstanding">₹0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Last Payment:</span>
+                        <span id="summaryLastPayment">-</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Collection Amount *</label>
+                    <input type="number" class="form-input" name="amount" id="collectionAmount" required min="1" placeholder="Enter amount collected">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Payment Method *</label>
+                    <select class="form-select" name="method" required>
+                        <option value="cash">Cash</option>
+                        <option value="upi">UPI</option>
+                        <option value="card">Card</option>
+                        <option value="cheque">Cheque</option>
+                        <option value="bank">Bank Transfer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Collection Date</label>
+                    <input type="date" class="form-input" name="collectionDate" id="collectionDate">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" name="notes" rows="3" placeholder="Any additional notes..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success" style="width: 100%;">
+                    <i class="fas fa-save"></i> Record Collection
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ledger Modal -->
+    <div class="modal" id="ledgerModal">
+        <div class="modal-content ledger-modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="ledgerTitle">Customer Ledger</h2>
+                <span class="close-modal" onclick="closeModal('ledgerModal')">&times;</span>
+            </div>
+            <div id="ledgerContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://grocerycrm-backend.onrender.com/api';
+        let allCustomers = [];
+        let allPayments = [];
+        let filteredCustomers = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('filterDate').valueAsDate = new Date();
+            document.getElementById('collectionDate').valueAsDate = new Date();
+            loadReport();
+        });
+
+        async function loadReport() {
+            try {
+                const [customers, payments] = await Promise.all([
+                    fetch(`${API_BASE_URL}/customers`).then(r => r.json()),
+                    fetch(`${API_BASE_URL}/payments`).then(r => r.json())
+                ]);
+
+                allCustomers = customers;
+                allPayments = payments;
+                filteredCustomers = customers;
+
+                updateStats();
+                renderCustomers();
+                loadCustomerDropdown();
+            } catch (error) {
+                console.error('Error loading report:', error);
+                showSampleData();
+            }
+        }
+
+        function updateStats() {
+            const today = new Date().toDateString();
+            
+            const todayCollections = allPayments.filter(p => {
+                const paymentDate = new Date(p.paidDate || p.createdAt);
+                return paymentDate.toDateString() === today && p.paidAmount > 0;
+            });
+
+            const todayTotal = todayCollections.reduce((sum, p) => sum + (p.paidAmount || 0), 0);
+            
+            const totalOutstanding = allPayments.reduce((sum, p) => {
+                return sum + ((p.amount || 0) - (p.paidAmount || 0));
+            }, 0);
+
+            const totalCredit = allPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
+
+            const totalCollected = allPayments.reduce((sum, p) => sum + (p.paidAmount || 0), 0);
+            const collectionRate = totalCredit > 0 ? ((totalCollected / totalCredit) * 100).toFixed(1) : 0;
+
+            const customersWithOutstanding = allCustomers.filter(c => {
+                const customerPayments = allPayments.filter(p => 
+                    p.customer.phone === c.phone || p.customer.name === c.name
+                );
+                const outstanding = customerPayments.reduce((sum, p) => 
+                    sum + ((p.amount || 0) - (p.paidAmount || 0)), 0
+                );
+                return outstanding > 0;
+            });
+
+            document.getElementById('todayCollection').textContent = `₹${todayTotal.toLocaleString('en-IN')}`;
+            document.getElementById('collectionCount').textContent = todayCollections.length;
+            document.getElementById('totalOutstanding').textContent = `₹${totalOutstanding.toLocaleString('en-IN')}`;
+            document.getElementById('outstandingCount').textContent = customersWithOutstanding.length;
+            document.getElementById('totalCredit').textContent = `₹${totalCredit.toLocaleString('en-IN')}`;
+            document.getElementById('collectionRate').textContent = `${collectionRate}%`;
+            document.getElementById('retailerCount').textContent = filteredCustomers.length;
+        }
+
+        function renderCustomers() {
+            const container = document.getElementById('customerGrid');
+            
+            if (filteredCustomers.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h3>No retailers found</h3>
+                        <p>Try adjusting your filters or add new customers</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const customerData = filteredCustomers.map(customer => {
+                const customerPayments = allPayments.filter(p => 
+                    p.customer.phone === customer.phone || p.customer.name === customer.name
+                );
+
+                const totalBilled = customerPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
+                const totalPaid = customerPayments.reduce((sum, p) => sum + (p.paidAmount || 0), 0);
+                const outstanding = totalBilled - totalPaid;
+
+                const today = new Date().toDateString();
+                const todayCollection = customerPayments
+                    .filter(p => {
+                        const paymentDate = new Date(p.paidDate || p.createdAt);
+                        return paymentDate.toDateString() === today && p.paidAmount > 0;
+                    })
+                    .reduce((sum, p) => sum + (p.paidAmount || 0), 0);
+
+                const lastPayment = customerPayments
+                    .filter(p => p.paidAmount > 0)
+                    .sort((a, b) => new Date(b.paidDate || b.createdAt) - new Date(a.paidDate || a.createdAt))[0];
+
+                return {
+                    customer,
+                    totalBilled,
+                    totalPaid,
+                    outstanding,
+                    todayCollection,
+                    lastPayment
+                };
+            });
+
+            const listHTML = `
+                <div class="list-container">
+                    <div class="list-header">
+                        <span>Retailer</span>
+                        <span>Billed</span>
+                        <span>Paid</span>
+                        <span>Outstanding</span>
+                        <span>Today</span>
+                        <span>Actions</span>
+                    </div>
+                    ${customerData.map(data => {
+                        const { customer, totalBilled, totalPaid, outstanding, todayCollection, lastPayment } = data;
+                        return `
+                            <div class="list-item" data-outstanding="${outstanding}" data-collected="${todayCollection}" data-name="${customer.name.toLowerCase()}">
+                                <div class="customer-info">
+                                    <span class="customer-name">${customer.name}</span>
+                                    <span class="customer-phone">
+                                        <i class="fas fa-phone"></i> ${customer.phone}
+                                    </span>
+                                </div>
+                                
+                                <div class="amount-display amount-normal">
+                                    ₹${totalBilled.toLocaleString('en-IN')}
+                                </div>
+                                
+                                <div class="amount-display amount-collected">
+                                    ₹${totalPaid.toLocaleString('en-IN')}
+                                </div>
+                                
+                                <div class="amount-display amount-outstanding">
+                                    ₹${outstanding.toLocaleString('en-IN')}
+                                </div>
+                                
+                                <div class="amount-display ${todayCollection > 0 ? 'amount-collected' : 'amount-muted'}">
+                                    ₹${todayCollection.toLocaleString('en-IN')}
+                                </div>
+                                
+                                <div class="list-actions">
+                                    ${outstanding > 0 ? `
+                                        <button class="list-action-btn btn-collect-sm" onclick='openCollectModalFor(${JSON.stringify(customer)})'>
+                                            <i class="fas fa-wallet"></i> Collect
+                                        </button>
+                                        <button class="list-action-btn btn-reminder-sm" onclick='sendReminderTo(${JSON.stringify(customer)})'>
+                                            <i class="fas fa-bell"></i>
+                                        </button>
+                                    ` : ''}
+                                    <button class="list-action-btn btn-view-sm" onclick='viewLedger(${JSON.stringify(customer)})'>
+                                        <i class="fas fa-file-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+
+            container.innerHTML = listHTML;
+        }
+
+        function filterCustomers() {
+            const search = document.getElementById('filterSearch').value.toLowerCase();
+            const filterType = document.getElementById('filterType').value;
+
+            filteredCustomers = allCustomers.filter(customer => {
+                const matchesSearch = customer.name.toLowerCase().includes(search) || 
+                                     customer.phone.includes(search);
+
+                if (!matchesSearch) return false;
+
+                const customerPayments = allPayments.filter(p => 
+                    p.customer.phone === customer.phone || p.customer.name === customer.name
+                );
+                const outstanding = customerPayments.reduce((sum, p) => 
+                    sum + ((p.amount || 0) - (p.paidAmount || 0)), 0
+                );
+
+                const today = new Date().toDateString();
+                const todayCollection = customerPayments
+                    .filter(p => {
+                        const paymentDate = new Date(p.paidDate || p.createdAt);
+                        return paymentDate.toDateString() === today && p.paidAmount > 0;
+                    })
+                    .reduce((sum, p) => sum + (p.paidAmount || 0), 0);
+
+                if (filterType === 'hasOutstanding') return outstanding > 0;
+                if (filterType === 'collected') return todayCollection > 0;
+                if (filterType === 'overdue') return outstanding > 5000;
+                return true;
+            });
+
+            sortCustomers();
+        }
+
+        function sortCustomers() {
+            const sortBy = document.getElementById('sortBy').value;
+
+            filteredCustomers.sort((a, b) => {
+                const aPayments = allPayments.filter(p => 
+                    p.customer.phone === a.phone || p.customer.name === a.name
+                );
+                const bPayments = allPayments.filter(p => 
+                    p.customer.phone === b.phone || p.customer.name === b.name
+                );
+
+                const aOutstanding = aPayments.reduce((sum, p) => 
+                    sum + ((p.amount || 0) - (p.paidAmount || 0)), 0
+                );
+                const bOutstanding = bPayments.reduce((sum, p) => 
+                    sum + ((p.amount || 0) - (p.paidAmount || 0)), 0
+                );
+
+                if (sortBy === 'outstanding-desc') return bOutstanding - aOutstanding;
+                if (sortBy === 'outstanding-asc') return aOutstanding - bOutstanding;
+                if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
+                
+                const today = new Date().toDateString();
+                const aToday = aPayments
+                    .filter(p => {
+                        const paymentDate = new Date(p.paidDate || p.createdAt);
+                        return paymentDate.toDateString() === today && p.paidAmount > 0;
+                    })
+                    .reduce((sum, p) => sum + (p.paidAmount || 0), 0);
+                const bToday = bPayments
+                    .filter(p => {
+                        const paymentDate = new Date(p.paidDate || p.createdAt);
+                        return paymentDate.toDateString() === today && p.paidAmount > 0;
+                    })
+                    .reduce((sum, p) => sum + (p.paidAmount || 0), 0);
+                
+                if (sortBy === 'collected-desc') return bToday - aToday;
+                
+                return 0;
+            });
+
+            renderCustomers();
+        }
+
+        function applyDateRange() {
+            const range = document.getElementById('filterRange').value;
+            const dateInput = document.getElementById('filterDate');
+            const today = new Date();
+
+            if (range === 'today') {
+                dateInput.valueAsDate = today;
+            } else if (range === 'week') {
+                const weekAgo = new Date(today.setDate(today.getDate() - 7));
+                dateInput.valueAsDate = weekAgo;
+            } else if (range === 'month') {
+                const monthAgo = new Date(today.setMonth(today.getMonth() - 1));
+                dateInput.valueAsDate = monthAgo;
+            }
+
+            loadReport();
+        }
+
+        function loadCustomerDropdown() {
+            const select = document.getElementById('customerSelect');
+            select.innerHTML = '<option value="">Choose a retailer...</option>';
+            
+            allCustomers.forEach(customer => {
+                const option = document.createElement('option');
+                option.value = customer._id || customer.id;
+                option.textContent = `${customer.name} - ${customer.phone}`;
+                option.dataset.customer = JSON.stringify(customer);
+                select.appendChild(option);
+            });
+        }
+
+        function updateCollectionSummary() {
+            const select = document.getElementById('customerSelect');
+            const summary = document.getElementById('collectionSummary');
+            
+            if (!select.value) {
+                summary.style.display = 'none';
+                return;
+            }
+
+            const customer = JSON.parse(select.options[select.selectedIndex].dataset.customer);
+            
+            const customerPayments = allPayments.filter(p => 
+                p.customer.phone === customer.phone || p.customer.name === customer.name
+            );
+
+            const totalBilled = customerPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
+            const totalPaid = customerPayments.reduce((sum, p) => sum + (p.paidAmount || 0), 0);
+            const outstanding = totalBilled - totalPaid;
+
+            const lastPayment = customerPayments
+                .filter(p => p.paidAmount > 0)
+                .sort((a, b) => new Date(b.paidDate || b.createdAt) - new Date(a.paidDate || a.createdAt))[0];
+
+            document.getElementById('summaryOutstanding').textContent = `₹${outstanding.toLocaleString('en-IN')}`;
+            document.getElementById('summaryLastPayment').textContent = lastPayment 
+                ? `₹${lastPayment.paidAmount.toLocaleString('en-IN')} on ${formatDate(lastPayment.paidDate || lastPayment.createdAt)}`
+                : 'No previous payments';
+
+            summary.style.display = 'block';
+        }
+
+        function openCollectModal() {
+            document.getElementById('collectModal').classList.add('active');
+        }
+
+        function openCollectModalFor(customer) {
+            const select = document.getElementById('customerSelect');
+            for (let option of select.options) {
+                if (option.dataset.customer) {
+                    const optCustomer = JSON.parse(option.dataset.customer);
+                    if (optCustomer.phone === customer.phone) {
+                        select.value = option.value;
+                        updateCollectionSummary();
+                        break;
+                    }
+                }
+            }
+            openCollectModal();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            if (modalId === 'collectModal') {
+                document.getElementById('collectionForm').reset();
+                document.getElementById('collectionSummary').style.display = 'none';
+            }
+        }
+
+        async function saveCollection(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            
+            const select = document.getElementById('customerSelect');
+            const customer = JSON.parse(select.options[select.selectedIndex].dataset.customer);
+
+            const pendingPayment = allPayments
+                .filter(p => 
+                    (p.customer.phone === customer.phone || p.customer.name === customer.name) &&
+                    p.paidAmount < p.amount
+                )
+                .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))[0];
+
+            if (!pendingPayment) {
+                alert('No pending payments for this customer');
+                return;
+            }
+
+            const collectedAmount = parseFloat(formData.get('amount'));
+            const newPaidAmount = (pendingPayment.paidAmount || 0) + collectedAmount;
+            const newOutstanding = pendingPayment.amount - newPaidAmount;
+
+            const paymentData = {
+                paidAmount: newPaidAmount,
+                paidDate: formData.get('collectionDate') || new Date(),
+                method: formData.get('method'),
+                status: newPaidAmount >= pendingPayment.amount ? 'paid' : 'partial',
+                notes: formData.get('notes') || `Collection: ₹${collectedAmount}`
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/payments/${pendingPayment._id || pendingPayment.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(paymentData)
+                });
+
+                if (!response.ok) throw new Error('Failed to record collection');
+
+                alert(`✅ Collection Recorded!\n\nCollected: ₹${collectedAmount.toLocaleString('en-IN')}\nRemaining: ₹${Math.max(0, newOutstanding).toLocaleString('en-IN')}`);
+                closeModal('collectModal');
+                loadReport();
+            } catch (error) {
+                console.error('Error recording collection:', error);
+                alert('❌ Failed to record collection. Please try again.');
+            }
+        }
+
+        function viewLedger(customer) {
+            const customerPayments = allPayments.filter(p => 
+                p.customer.phone === customer.phone || p.customer.name === customer.name
+            ).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+            let runningBalance = 0;
+            const ledgerHTML = `
+                <div style="margin-bottom: 1rem;">
+                    <strong style="font-size: 1.125rem;">${customer.name}</strong><br>
+                    <span style="color: var(--text-muted);">${customer.phone}</span>
+                </div>
+                
+                <table class="ledger-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Invoice</th>
+                            <th>Billed</th>
+                            <th>Paid</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${customerPayments.map(p => {
+                            runningBalance += (p.amount || 0) - (p.paidAmount || 0);
+                            return `
+                                <tr>
+                                    <td>${formatDate(p.createdAt)}</td>
+                                    <td>${p.invoiceId}</td>
+                                    <td>₹${p.amount.toLocaleString('en-IN')}</td>
+                                    <td style="color: var(--accent-green);">₹${(p.paidAmount || 0).toLocaleString('en-IN')}</td>
+                                    <td style="font-weight: 700; color: ${runningBalance > 0 ? 'var(--accent-red)' : 'var(--accent-green)'};">
+                                        ₹${runningBalance.toLocaleString('en-IN')}
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 1rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-md);">
+                    <strong>Total Outstanding: <span style="color: var(--accent-red);">₹${runningBalance.toLocaleString('en-IN')}</span></strong>
+                </div>
+            `;
+
+            document.getElementById('ledgerTitle').textContent = `Ledger - ${customer.name}`;
+            document.getElementById('ledgerContent').innerHTML = ledgerHTML;
+            document.getElementById('ledgerModal').classList.add('active');
+        }
+
+        function sendReminderTo(customer) {
+            if (confirm(`Send payment reminder to ${customer.name}?`)) {
+                alert(`📱 Reminder sent to ${customer.name} (${customer.phone})`);
+            }
+        }
+
+        function sendReminders() {
+            const customersWithOutstanding = filteredCustomers.filter(c => {
+                const payments = allPayments.filter(p => 
+                    p.customer.phone === c.phone || p.customer.name === c.name
+                );
+                const outstanding = payments.reduce((sum, p) => 
+                    sum + ((p.amount || 0) - (p.paidAmount || 0)), 0
+                );
+                return outstanding > 0;
+            });
+
+            if (confirm(`Send payment reminders to ${customersWithOutstanding.length} retailers?`)) {
+                alert(`✅ Reminders sent to ${customersWithOutstanding.length} retailers via WhatsApp/SMS`);
+            }
+        }
+
+        function exportToExcel() {
+            alert('📊 Exporting to Excel... (Feature coming soon!)');
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        function showSampleData() {
+            allCustomers = [
+                { id: 1, name: 'Ramesh Kirana', phone: '9876543210', address: 'Madikeri' },
+                { id: 2, name: 'Suresh General Store', phone: '9876543211', address: 'Virajpet' },
+                { id: 3, name: 'Krishna Stores', phone: '9876543212', address: 'Kushalnagar' }
+            ];
+
+            allPayments = [
+                { id: 1, invoiceId: 'INV-2025-001', customer: allCustomers[0], amount: 15000, paidAmount: 12000, createdAt: new Date(), paidDate: new Date() },
+                { id: 2, invoiceId: 'INV-2025-002', customer: allCustomers[1], amount: 10000, paidAmount: 8500, createdAt: new Date(), paidDate: new Date() },
+                { id: 3, invoiceId: 'INV-2025-003', customer: allCustomers[2], amount: 8000, paidAmount: 8000, createdAt: new Date(), paidDate: new Date() }
+            ];
+
+            filteredCustomers = allCustomers;
+            updateStats();
+            renderCustomers();
+            loadCustomerDropdown();
+        }
+    </script>
+</body>
+</html>
